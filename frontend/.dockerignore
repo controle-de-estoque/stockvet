@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+.gitignore
+.vscode
+coverage
+*.log
+controle-de-estoque-backend/target
+controle-de-estoque-backend/

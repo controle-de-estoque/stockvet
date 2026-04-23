@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: stockvet
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/stockvet}
+    username: ${SPRING_DATASOURCE_USERNAME:stockvet}
+    password: ${SPRING_DATASOURCE_PASSWORD:stockvet}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+api:
+  security:
+    token:
+      segredo: ${JWT_SEGREDO:mySecret}
+
