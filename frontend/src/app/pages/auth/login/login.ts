@@ -1,5 +1,4 @@
-import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from "@angular/router";
@@ -7,13 +6,14 @@ import { Api } from '../../../api';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, NgClass, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
 
     form: FormGroup;
+    errorMessage = signal<string>('');
 
     constructor(
       private fb: FormBuilder,
@@ -29,17 +29,18 @@ export class Login {
     login() {
       if (this.form.invalid) {
         this.form.markAllAsTouched();
+        this.errorMessage.set('Verifique todos os campos antes de submeter');
         return;
       }
 
       this.api.login(this.form.value).subscribe({
         next: (res) => {
           localStorage.setItem('token', res.token);
-          this.router.navigate(['/']);
+          this.router.navigate(['/produtos']);
         },
         error: (err) => {
           console.error('Erro ao fazer login', err);
-          alert('Falha na autenticação. Verifique suas credenciais.');
+          this.errorMessage.set('Falha na autenticação. Verifique suas credenciais.')
         }
       });
     }

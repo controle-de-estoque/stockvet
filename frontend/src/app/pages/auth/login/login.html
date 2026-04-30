@@ -14,23 +14,34 @@
         <label for="username" class="text-sm">E-mail</label>
         <input formControlName="username" id="username" name="username" type="text" placeholder="Digite seu e-mail"
         class="bg-white border border-black rounded-sm py-1 px-2 text-sm focus:outline-none">
-        <p class="text-red-600 italic text-[12px]" [ngClass]="{'hidden': shouldHideErrorFieldMessage('email')}">Campo obrigatório</p>
+
+        @if(this.form.get('username')?.hasError('email')) {
+          <p class="text-red-600 italic text-[12px]">Este não é um email válido</p>
+        } @else if (!shouldHideErrorFieldMessage('username')) {
+          <p class="text-red-600 italic text-[12px]">Campo obrigatório</p>
+        }
       </div>
 
       <div class="flex flex-col">
         <label for="password" class="text-sm">Senha</label>
         <input formControlName="password" id="password" name="password" type="password" placeholder="Digite sua senha"
         class="bg-white border border-black rounded-sm py-1 px-2 text-sm focus:outline-none">
-        <p class="text-red-600 italic text-[12px]" [ngClass]="{'hidden': shouldHideErrorFieldMessage('senha')}">Campo obrigatório</p>
+        @if(!shouldHideErrorFieldMessage('password')) {
+          <p class="text-red-600 italic text-[12px]">Campo obrigatório</p>
+        }
       </div>
 
-      <button type="submit" (click)="login()" class="w-full self-center bg-[#2A56F2] text-white font-bold rounded-2xl py-1 my-4 border border-[#2A56F2] hover:bg-white hover:text-[#2A56F2] transition-all duration-300 hover:cursor-pointer">Login</button>
+      <button type="button" (click)="login()" class="w-full self-center bg-[#2A56F2] text-white font-bold rounded-2xl py-1 my-4 border border-[#2A56F2] hover:bg-white hover:text-[#2A56F2] transition-all duration-300 hover:cursor-pointer">Login</button>
 
-      <div class="flex flex-col items-center">
-        <a routerLink="/cadastro" class="text-sm underline italic">Ainda não tem uma conta? Cadastre-se</a>
-        <a routerLink="/redefinir-senha" class="text-sm underline italic">Esqueceu sua senha?</a>
+      <div class="flex flex-col items-center gap-2">
+        <a routerLink="/cadastro" class="text-sm italic">Ainda não tem uma conta? Cadastre-se</a>
+        <a routerLink="/redefinir-senha" class="text-sm italic">Esqueceu sua senha?</a>
       </div>
     </form>
+
+    @if (errorMessage()) {
+      <p class="text-red-600 italic text-[12px] mt-4">{{errorMessage()}}</p>
+    }
 
   </div>
 

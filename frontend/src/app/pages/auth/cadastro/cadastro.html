@@ -14,44 +14,62 @@
         <label for="nome" class="text-sm">Nome</label>
         <input formControlName="nome" id="nome" name="nome" type="text" placeholder="Digite seu nome"
         class="bg-white border border-black rounded-sm py-1 px-2 text-sm focus:outline-none">
-        <p class="text-red-600 italic text-[12px]" [ngClass]="{'hidden': shouldHideErrorFieldMessage('nome')}">Campo obrigatório</p>
+        @if (!shouldHideErrorFieldMessage('nome')) {
+          <p class="text-red-600 italic text-[12px]">Campo obrigatório</p>
+        }
       </div>
 
       <div class="flex flex-col">
         <label for="sobrenome" class="text-sm">Sobrenome</label>
         <input formControlName="sobrenome" id="sobrenome" name="sobrenome" type="text" placeholder="Digite seu sobrenome"
         class="bg-white border border-black rounded-sm py-1 px-2 text-sm focus:outline-none">
-        <p class="text-red-600 italic text-[12px]" [ngClass]="{'hidden': shouldHideErrorFieldMessage('sobrenome')}">Campo obrigatório</p>
+        @if (!shouldHideErrorFieldMessage('sobrenome')) {
+          <p class="text-red-600 italic text-[12px]">Campo obrigatório</p>
+        }
       </div>
 
       <div class="flex flex-col">
         <label for="email" class="text-sm">E-mail</label>
         <input formControlName="email" id="email" name="email" type="text" placeholder="Digite seu e-mail"
         class="bg-white border border-black rounded-sm py-1 px-2 text-sm focus:outline-none">
-        <p class="text-red-600 italic text-[12px]" [ngClass]="{'hidden': shouldHideErrorFieldMessage('email')}">Campo obrigatório</p>
+        @if(this.form.get('email')?.hasError('email')) {
+          <p class="text-red-600 italic text-[12px]">Este não é um email válido</p>
+        } @else if (!shouldHideErrorFieldMessage('email')) {
+          <p class="text-red-600 italic text-[12px]">Campo obrigatório</p>
+        }
       </div>
 
       <div class="flex flex-col">
         <label for="senha" class="text-sm">Senha</label>
         <input formControlName="senha" id="senha" name="senha" type="password" placeholder="Digite sua senha"
         class="bg-white border border-black rounded-sm py-1 px-2 text-sm focus:outline-none">
-        <p class="text-red-600 italic text-[12px]" [ngClass]="{'hidden': shouldHideErrorFieldMessage('senha')}">Campo obrigatório (mín. 6 caracteres)</p>
+
+        @if (this.form.get('senha')?.hasError('minlength')) {
+          <p class="text-red-600 italic text-[12px]">A senha deve conter pelo menos 8 caracteres</p>
+        } @else if (!shouldHideErrorFieldMessage('senha')) {
+          <p class="text-red-600 italic text-[12px]">Campo obrigatório</p>
+        }
       </div>
 
       <div class="flex flex-col">
         <label for="animalEstimacao" class="text-sm">Nome do primeiro animal de estimação</label>
         <input formControlName="animalEstimacao" id="animalEstimacao" name="animalEstimacao" type="text" placeholder="Nome do seu pet"
         class="bg-white border border-black rounded-sm py-1 px-2 text-sm focus:outline-none">
-        <p class="text-red-600 italic text-[12px]" [ngClass]="{'hidden': shouldHideErrorFieldMessage('animalEstimacao')}">Campo obrigatório</p>
+        @if (!shouldHideErrorFieldMessage('animalEstimacao')) {
+          <p class="text-red-600 italic text-[12px]">Campo obrigatório</p>
+        }
       </div>
 
-      <button type="submit" (click)="cadastrar()" class="w-full self-center bg-[#2A56F2] text-white font-bold rounded-2xl py-1 my-4 border border-[#2A56F2] hover:bg-white hover:text-[#2A56F2] transition-all duration-300 hover:cursor-pointer">Cadastro</button>
+      <button type="button" (click)="cadastrar()" class="w-full self-center bg-[#2A56F2] text-white font-bold rounded-2xl py-1 my-4 border border-[#2A56F2] hover:bg-white hover:text-[#2A56F2] transition-all duration-300 hover:cursor-pointer">Cadastro</button>
 
       <div class="flex flex-col items-center">
-        <a routerLink="/login" class="text-sm underline italic">Já tem uma conta? Faça login</a>
+        <a routerLink="/login" class="text-sm italic">Já tem uma conta? Faça login</a>
       </div>
     </form>
 
+    @if(errorMessage()) {
+      <p class="text-red-600 italic text-[12px]">{{errorMessage()}}</p>
+    }
   </div>
 
   <img src="imagem-login.png" alt="" class="w-1/2 h-screen object-cover object-left">

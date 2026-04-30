@@ -1,5 +1,4 @@
-import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from "@angular/router";
@@ -7,13 +6,14 @@ import { Api } from '../../../api';
 
 @Component({
   selector: 'app-redefinir-senha',
-  imports: [ReactiveFormsModule, NgClass, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './redefinir-senha.html',
-  styleUrl: './redefinir-senha.css', // ou remova se não for usar arquivo de estilo
+  styleUrl: './redefinir-senha.css',
 })
 export class RedefinirSenha {
 
     form: FormGroup;
+    errorMessage = signal<string>('');
 
     constructor(
       private fb: FormBuilder,
@@ -23,13 +23,14 @@ export class RedefinirSenha {
       this.form = fb.group({
         email: ['', [Validators.required, Validators.email]],
         animalEstimacao: ['', Validators.required],
-        senha: ['', [Validators.required, Validators.minLength(6)]]
+        senha: ['', [Validators.required, Validators.minLength(8)]]
       })
     }
 
     redefinir() {
       if (this.form.invalid) {
         this.form.markAllAsTouched();
+        this.errorMessage.set('Verifique todos os campos antes de submeter');
         return;
       }
 
@@ -46,7 +47,7 @@ export class RedefinirSenha {
         },
         error: (err) => {
           console.error('Erro ao redefinir senha', err);
-          alert('E-mail ou resposta da pergunta de segurança incorretos.');
+          this.errorMessage.set('E-mail ou resposta da pergunta de segurança incorretos.');
         }
       });
     }

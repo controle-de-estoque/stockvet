@@ -1,5 +1,4 @@
-import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from "@angular/router";
@@ -7,13 +6,14 @@ import { Api } from '../../../api';
 
 @Component({
   selector: 'app-cadastro',
-  imports: [ReactiveFormsModule, NgClass, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './cadastro.html',
-  styleUrl: './cadastro.css', // ou remova se não for usar arquivo de estilo
+  styleUrl: './cadastro.css',
 })
 export class Cadastro {
 
     form: FormGroup;
+    errorMessage = signal<string>('');
 
     constructor(
       private fb: FormBuilder,
@@ -24,7 +24,7 @@ export class Cadastro {
         nome: ['', Validators.required],
         sobrenome: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
-        senha: ['', [Validators.required, Validators.minLength(6)]],
+        senha: ['', [Validators.required, Validators.minLength(8)]],
         animalEstimacao: ['', Validators.required]
       })
     }
@@ -32,6 +32,7 @@ export class Cadastro {
     cadastrar() {
       if (this.form.invalid) {
         this.form.markAllAsTouched();
+        this.errorMessage.set('Verifique todos os campos antes de submeter');
         return;
       }
 
@@ -50,7 +51,7 @@ export class Cadastro {
         },
         error: (err) => {
           console.error('Erro ao cadastrar', err);
-          alert('Erro ao realizar cadastro. Verifique os dados ou se o e-mail já está em uso.');
+          this.errorMessage.set('Erro ao realizar cadastro. Verifique os dados ou se o e-mail já está em uso.');
         }
       });
     }
