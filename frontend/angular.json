@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "stockvet": {
+    "frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -54,15 +54,12 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "proxyConfig": "proxy.conf.json"
-          },
           "configurations": {
             "production": {
-              "buildTarget": "stockvet:build:production"
+              "buildTarget": "frontend:build:production"
             },
             "development": {
-              "buildTarget": "stockvet:build:development"
+              "buildTarget": "frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

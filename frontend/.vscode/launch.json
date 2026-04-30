@@ -3,13 +3,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "java",
-      "name": "StockvetApplication",
-      "request": "launch",
-      "mainClass": "ufrpe.stockvet.StockvetApplication",
-      "projectName": "stockvet"
-    },
-    {
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",
