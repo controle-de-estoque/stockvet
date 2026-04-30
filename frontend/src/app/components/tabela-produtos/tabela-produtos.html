@@ -1,0 +1,92 @@
+<div class="min-h-screen bg-[#f4eaee] p-6 font-sans text-gray-900 flex flex-col items-center gap-6">
+
+  <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white rounded-lg shadow-sm flex flex-col items-center justify-center py-6">
+      <span class="text-[#4e43e7] font-semibold text-base mb-1">Produtos ativos</span>
+      <span class="text-sm text-gray-800">2 produtos ativos</span>
+    </div>
+    <div class="bg-white rounded-lg shadow-sm flex flex-col items-center justify-center py-6">
+      <span class="text-red-600 font-semibold text-base mb-1">Em alerta</span>
+      <span class="text-sm text-gray-800">3 produtos</span>
+    </div>
+    <div class="bg-white rounded-lg shadow-sm flex flex-col items-center justify-center py-6">
+      <span class="text-[#4e43e7] font-semibold text-base mb-1">Produtos registrados</span>
+      <span class="text-sm text-gray-800">3 produtos catalogados</span>
+    </div>
+  </div>
+
+  <div class="w-full max-w-5xl bg-white rounded-lg shadow-sm border border-gray-200 p-6 pb-4">
+
+    <div class="flex flex-col md:flex-row justify-between items-end mb-6 gap-4">
+      <div class="w-full md:w-8/12">
+        <label class="block text-[15px] font-medium text-black mb-1">Pesquisar</label>
+        <input
+          type="text"
+          placeholder="Digite aqui o nome do produto . . ."
+          class="w-full border border-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+      <button class="w-full md:w-auto bg-[#4e43e7] hover:bg-indigo-700 text-white font-medium text-sm py-2.5 px-6 rounded transition-colors">
+        Cadastrar produto
+      </button>
+    </div>
+
+    <div class="border border-gray-300 rounded overflow-hidden">
+      <table class="w-full text-left border-collapse min-w-max">
+        <thead class="bg-[#4e43e7] text-white text-sm">
+          <tr>
+            <th class="py-2.5 px-4 font-medium">Nome</th>
+            <th class="py-2.5 px-4 font-medium text-center">Categoria</th>
+            <th class="py-2.5 px-4 font-medium text-center">Tipo</th>
+            <th class="py-2.5 px-4 font-medium text-center">Quantidade</th>
+            <th class="py-2.5 px-4 font-medium text-center">Qtd. Crítica</th>
+            <th class="py-2.5 px-4 font-medium text-center">Unidade</th>
+            <th class="py-2.5 px-4 font-medium text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm text-gray-900">
+          @for (p of produtos; track $index; let even = $even) {
+            <tr [class.bg-white]="even" [class.bg-[#ebe3e4]]="!even" class="border-b border-gray-300 last:border-0">
+              <td class="py-2.5 px-4 font-medium">{{ p.nome }}</td>
+              <td class="py-2.5 px-4 text-center">{{ p.categoria }}</td>
+              <td class="py-2.5 px-4 text-center">teste</td>
+              <td class="py-2.5 px-4 text-center">{{ p.quantidade }}</td>
+              <td class="py-2.5 px-4 text-center">{{ p.quantidadeCritica }}</td>
+              <td class="py-2.5 px-4 text-center">{{ p.unidade }}</td>
+              <td class="py-2.5 px-4">
+                <div class="flex justify-center items-center gap-2">
+                  <button class="text-black hover:text-indigo-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button class="text-black hover:text-red-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4 flex justify-end">
+      <label class="flex items-center gap-2 cursor-pointer text-sm font-medium">
+        <input type="checkbox" class="w-4 h-4 text-indigo-600 bg-white border-gray-800 rounded focus:ring-indigo-500" />
+        Visualizar produtos inativos
+      </label>
+    </div>
+  </div>
+
+  <div class="flex justify-center items-center gap-3">
+    <button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm font-semibold hover:bg-gray-50 transition-colors">
+      1
+    </button>
+    <button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+</div>

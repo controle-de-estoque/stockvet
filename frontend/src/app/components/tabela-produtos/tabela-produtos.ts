@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { Navbar } from '../../components/navbar/navbar';
-import { Produto } from './Produto';
+import { Produto } from '../../pages/products/Produto';
 
 @Component({
-  selector: 'app-products',
-  imports: [ Navbar],
-  templateUrl: './products.html',
-  styleUrl: './products.css',
+  selector: 'app-tabela-produtos',
+  imports: [],
+  templateUrl: './tabela-produtos.html',
+  styleUrl: './tabela-produtos.css',
 })
-export class Products {
+export class TabelaProdutos {
 
   produtos: Produto[] = [
     {
@@ -68,5 +67,4 @@ export class Products {
       unidade: 'pacotes'
     }
   ];
-
 }
