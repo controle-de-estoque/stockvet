@@ -1,0 +1,31 @@
+<div class="flex flex-col w-full max-w-8/10 m-auto bg-white rounded-b-sm shadow">
+  <div class="flex flex-row justify-between pl-4 pr-8">
+    <div class="flex flex-row items-center">
+      <img src="logo-stockvet.png" alt="" class="h-20 object-cover">
+      <h1 class="font-semibold text-2xl">StockVet</h1>
+    </div>
+
+    <button type="button" (click)="logout()" class="flex flex-row items-center gap-1 hover:cursor-pointer">
+      <i class="fa-solid fa-arrow-right-from-bracket text-red-500"></i>
+      <span class="font-medium">Sair</span>
+    </button>
+  </div>
+
+  <ul class="flex flex-row justify-between px-8 py-2 border-t border-[#EEE5E9]">
+    <li routerLinkActive="text-blue-500" class="hover:cursor-pointer hover:text-blue-500 transition duration-300">
+      <a routerLink="/produtos">Produtos</a>
+    </li>
+    <li routerLinkActive="text-blue-500" class="hover:cursor-pointer hover:text-blue-500 transition duration-300">
+      <a routerLink="/movimentacoes">Movimentações</a>
+    </li>
+    <li routerLinkActive="text-blue-500" class="hover:cursor-pointer hover:text-blue-500 transition duration-300">
+      <a routerLink="/relatorios">Relatórios</a>
+    </li>
+    <li routerLinkActive="text-blue-500" class="hover:cursor-pointer hover:text-blue-500 transition duration-300">
+      <a routerLink="/procedimentos">Procedimentos</a>
+    </li>
+    <li routerLinkActive="text-blue-500" class="hover:cursor-pointer hover:text-blue-500 transition duration-300">
+      <a routerLink="/admin">Admin</a>
+    </li>
+  </ul>
+</div>
