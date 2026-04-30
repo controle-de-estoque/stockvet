@@ -1,6 +1,7 @@
 package com.finconnect.auth_service.controller;
 
 import org.springframework.http.ResponseEntity;
+import java.util.UUID;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.finconnect.auth_service.dto.ResetPasswordRequest;
+import com.finconnect.auth_service.dto.SalvarEstoque;
 import com.finconnect.auth_service.dto.SignInRequest;
 import com.finconnect.auth_service.dto.SignUpRequest;
 import com.finconnect.auth_service.entity.Users;
 import com.finconnect.auth_service.exception_handler.exceptions.PetNameIsIncorrectException;
 import com.finconnect.auth_service.exception_handler.exceptions.UserAlredyExistsException;
 import com.finconnect.auth_service.repository.UsersRepository;
+import com.finconnect.auth_service.service.ProductsService;
 import com.finconnect.auth_service.util.JwtUtil;
 
 @RestController
@@ -36,6 +39,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private ProductsService productsService;
     
     @PostMapping("/signin")
     public ResponseEntity<String> authenticateUser(@RequestBody SignInRequest request) {
@@ -50,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> registerUser(@RequestBody SignUpRequest request) throws BadRequestException {
+    public ResponseEntity<UUID> registerUser(@RequestBody SignUpRequest request) throws BadRequestException {
         if(usersRepository.findByEmail(request.email()).isPresent()) {
             throw new UserAlredyExistsException("Usuário já cadastrado");
         }
@@ -64,7 +70,7 @@ public class AuthController {
 
         usersRepository.save(newUser);
 
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok(productsService.salvarEstoque(new SalvarEstoque("StockVet")));
     }
 
     @PostMapping("reset-password")
