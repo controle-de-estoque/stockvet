@@ -7,19 +7,23 @@ import { Observable } from 'rxjs';
 })
 export class Api {
 
-  private baseUrl = "http://localhost:8080/api/auth";
+  private baseUrl = "http://localhost:8080/api";
 
   constructor(private http: HttpClient) {}
 
   login(dados: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signin`, dados, {responseType: 'text'});
+    return this.http.post(`${this.baseUrl}/auth/signin`, dados);
   }
 
   cadastraUsuarioAdmin(dados: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signup`, dados, {responseType: 'text'});
+    return this.http.post(`${this.baseUrl}/auth/signup`, dados, {responseType: 'text'});
   }
 
   redefinirSenha(dados: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/reset-password`, dados, {responseType: 'text'});
+    return this.http.post(`${this.baseUrl}/auth/reset-password`, dados, {responseType: 'text'});
+  }
+
+  buscarProdutos(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/produtos/${localStorage.getItem('estoque')}`);
   }
 }

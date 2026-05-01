@@ -35,7 +35,17 @@ export class Login {
 
       this.api.login(this.form.value).subscribe({
         next: (res) => {
-          localStorage.setItem('token', res.token);
+
+          try {
+            const payload = res.jwt.split('.')[1];
+            const decoded = JSON.parse(atob(payload));
+            localStorage.setItem('email', decoded.sub);
+            localStorage.setItem('estoque', res.estoque);
+            localStorage.setItem('token', res);
+          } catch (e) {
+            console.error('Token inválido');
+          }
+
           this.router.navigate(['/produtos']);
         },
         error: (err) => {
