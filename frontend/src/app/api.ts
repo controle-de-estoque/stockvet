@@ -26,4 +26,12 @@ export class Api {
   buscarProdutos(): Observable<any> {
     return this.http.get(`${this.baseUrl}/produtos/${localStorage.getItem('estoque')}`);
   }
+
+  cadastrarCategoria(dados: {nome: string, estoque: string}): Observable<any> {
+    return this.http.post(`${this.baseUrl}/produtos/categoria`, dados);
+  }
+
+  cadastrarUnidade(dados: {nome: string, consumoMinimo: number, estoque: string}): Observable<any> {
+    return this.http.post(`${this.baseUrl}/produtos/unidade`, dados);
+  }
 }
