@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, signal, effect, OnDestroy } from '@angular/core';
 import { Navbar } from '../../components/navbar/navbar';
 import { Produto } from './Produto';
+import { FormsModule } from "@angular/forms";
+import { Subject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-products',
-  imports: [ Navbar],
+  imports: [Navbar, FormsModule],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
-export class Products {
+export class Products implements OnDestroy {
 
-  produtos: Produto[] = [
+  produtos = signal<Produto[]>([
     {
       nome: 'Vacina V10',
       categoria: 'Imunológicos',
@@ -67,6 +69,36 @@ export class Products {
       quantidadeCritica: 30,
       unidade: 'pacotes'
     }
-  ];
+  ]);
+  produtosFiltrados = signal<Produto[]>([]);
+  private searchSubject = new Subject<string>();
+  private searchSubscription: Subscription;
 
+  nomeProduto: string = '';
+
+  constructor() {
+    this.produtosFiltrados.set(this.produtos());
+
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe(searchTerm => {
+      this.executarFiltro(searchTerm);
+    });
+  }
+
+  onSearchChange(value: string) {
+    this.searchSubject.next(value);
+  }
+
+  private executarFiltro(searchTerm: string) {
+    const filtrados = this.produtos().filter((p: Produto) =>
+      p.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    this.produtosFiltrados.set(filtrados);
+  }
+
+  ngOnDestroy() {
+    this.searchSubscription.unsubscribe();
+  }
 }

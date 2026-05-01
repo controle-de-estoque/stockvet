@@ -27,6 +27,8 @@
         <div class="w-full md:w-8/12">
           <label class="block text-sm md:text-[15px] font-medium text-black mb-1">Pesquisar</label>
           <input
+            [(ngModel)]="nomeProduto"
+            (ngModelChange)="onSearchChange($event)"
             type="text"
             placeholder="Digite aqui o nome do produto . . ."
             class="w-full border border-gray-800 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -52,7 +54,7 @@
             </tr>
           </thead>
           <tbody class="text-sm text-gray-900">
-            @for (p of produtos; track $index; let even = $even) {
+            @for (p of produtosFiltrados(); track $index; let even = $even) {
               <tr [class.bg-white]="even" [class.bg-[#ebe3e4]]="!even" class="border-b border-gray-300 last:border-0">
                 <td class="py-2.5 px-4 font-medium">{{ p.nome }}</td>
                 <td class="py-2.5 px-4 text-center">{{ p.categoria }}</td>
@@ -78,7 +80,7 @@
 
       <!-- Cards para Mobile (Visíveis apenas em telas < md) -->
       <div class="md:hidden flex flex-col gap-4">
-        @for (p of produtos; track $index) {
+        @for (p of produtosFiltrados(); track $index) {
           <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
             <div class="flex justify-between items-start border-b border-gray-200 pb-2 mb-3">
               <div>
