@@ -11,6 +11,7 @@ import { CadastrarMovimentacao } from './pages/cadastrar-movimentacao/cadastrar-
 import { Admin } from './pages/admin/admin';
 import { CadastrarUsuario } from './pages/cadastrar-usuario/cadastrar-usuario';
 import { CadastrarCessionario } from './pages/cadastrar-cessionario/cadastrar-cessionario';
+import { Relatorios } from './pages/relatorios/relatorios';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,10 @@ export const routes: Routes = [
   {
     path: 'movimentacoes',
     component: Movimentacoes
+  },
+  {
+    path: 'relatorios',
+    component: Relatorios
   },
   {
     path: 'admin',
