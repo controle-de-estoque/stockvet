@@ -7,11 +7,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import com.finconnect.auth_service.dto.CategoriaResponse;
 import com.finconnect.auth_service.dto.ProdutoResponse;
 import com.finconnect.auth_service.dto.SalvarCategoria;
 import com.finconnect.auth_service.dto.SalvarEstoque;
 import com.finconnect.auth_service.dto.SalvarProduto;
 import com.finconnect.auth_service.dto.SalvarUnidade;
+import com.finconnect.auth_service.dto.UnidadeResponse;
 import com.finconnect.auth_service.entity.Categoria;
 import com.finconnect.auth_service.entity.Estoque;
 import com.finconnect.auth_service.entity.Produto;
@@ -112,5 +115,25 @@ public class ProductsService {
         var produtos = this.productsRepository.findProdutosResponseByEstoqueAndNome(id, nome);
     
         return produtos;
+    }
+
+    public List<CategoriaResponse> buscarCategoriasPorEstoque(UUID id) {
+        logger.info("buscando categorias do estoque: " + id);
+
+        var categorias = this.categoriaRepository.findAllByEstoque(id);
+        
+        return categorias.stream()
+                .map(c -> new CategoriaResponse(c.getId(), c.getNome()))
+                .toList();
+    }
+
+    public List<UnidadeResponse> buscarUnidadesPorEstoque(UUID id) {
+        logger.info("buscando unidades do estoque: " + id);
+
+        var unidades = this.unidadeRepository.findAllByEstoque(id);
+
+        return unidades.stream()
+                .map(u -> new UnidadeResponse(u.getId(), u.getNome(), u.getConsumoMinimo()))
+                .toList();
     }
 }

@@ -4,12 +4,14 @@
   <div class="w-full bg-white rounded-lg shadow-sm p-6 sm:p-10 border border-gray-100">
     <h2 class="text-2xl font-bold text-gray-900 mb-8">Cadastrar produto</h2>
 
-    <form class="space-y-6">
+    <form class="space-y-6" (submit)="cadastrarProduto()">
       <div>
         <label for="nome" class="block text-sm font-semibold text-gray-900 mb-2">Nome</label>
         <input
           type="text"
           id="nome"
+          name="nome"
+          [(ngModel)]="nome"
           placeholder="Digite aqui o nome do produto ..."
           class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
           required
@@ -37,14 +39,15 @@
         <div class="relative">
           <select
             id="unidade"
+            name="unidade"
+            [(ngModel)]="unidadeId"
             class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
             required
           >
             <option value="" disabled selected>Selecione uma unidade ...</option>
-            <option value="un">Unidade (UN)</option>
-            <option value="cx">Caixa (CX)</option>
-            <option value="kg">Quilograma (KG)</option>
-            <option value="l">Litro (L)</option>
+            @for (unidade of unidades(); track unidade.uuid) {
+              <option [value]="unidade.uuid">{{ unidade.nome }}</option>
+            }
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
             <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -62,14 +65,15 @@
         <div class="relative">
           <select
             id="categoria"
+            name="categoria"
+            [(ngModel)]="categoriaId"
             class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
             required
           >
             <option value="" disabled selected>Selecione uma categoria ...</option>
-            <option value="limpeza">Material de Limpeza</option>
-            <option value="escritorio">Material de Escritório</option>
-            <option value="eletronicos">Eletrônicos</option>
-            <option value="ferramentas">Ferramentas</option>
+            @for (categoria of categorias(); track categoria.uuid) {
+              <option [value]="categoria.uuid">{{ categoria.nome }}</option>
+            }
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
             <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -84,6 +88,8 @@
         <div class="relative">
           <select
             id="tipo"
+            name="tipo"
+            [(ngModel)]="tipo"
             class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
             required
           >

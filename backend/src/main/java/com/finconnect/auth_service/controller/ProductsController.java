@@ -2,10 +2,13 @@ package com.finconnect.auth_service.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.finconnect.auth_service.dto.CategoriaResponse;
 import com.finconnect.auth_service.dto.ProdutoResponse;
 import com.finconnect.auth_service.dto.SalvarCategoria;
 import com.finconnect.auth_service.dto.SalvarProduto;
 import com.finconnect.auth_service.dto.SalvarUnidade;
+import com.finconnect.auth_service.dto.UnidadeResponse;
 import com.finconnect.auth_service.service.ProductsService;
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +37,16 @@ public class ProductsController {
     @PostMapping("/categoria")
     public ResponseEntity<String> salvarCategoria(@RequestBody SalvarCategoria request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.productsService.salvarCategoria(request));
+    }
+
+    @GetMapping("/categoria/{estoque}")
+    public ResponseEntity<List<CategoriaResponse>> buscarCategoriasPorEstoque(@PathVariable UUID estoque) {
+        return ResponseEntity.ok(this.productsService.buscarCategoriasPorEstoque(estoque));
+    }
+
+    @GetMapping("/unidade/{estoque}")
+    public ResponseEntity<List<UnidadeResponse>> buscarUnidadesPorEstoque(@PathVariable UUID estoque) {
+        return ResponseEntity.ok(this.productsService.buscarUnidadesPorEstoque(estoque));
     }
 
     @PostMapping()

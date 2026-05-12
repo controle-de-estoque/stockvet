@@ -32,6 +32,18 @@ export class Api {
   }
 
   cadastrarUnidade(dados: {nome: string, consumoMinimo: number, estoque: string}): Observable<any> {
-    return this.http.post(`${this.baseUrl}/produtos/unidade`, dados);
+    return this.http.post(`${this.baseUrl}/produtos/unidade`, dados, { responseType: 'text' });
+  }
+
+  buscarCategoriasPorEstoque(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/produtos/categoria/${localStorage.getItem('estoque')}`);
+  }
+
+  buscarUnidadesPorEstoque(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/produtos/unidade/${localStorage.getItem('estoque')}`);
+  }
+
+  cadastrarProduto(dados: {nome: string, categoria: string, tipo: string, unidade: string, estoque: string}) {
+    return this.http.post(`${this.baseUrl}/produtos`, dados, {responseType: 'text'});
   }
 }

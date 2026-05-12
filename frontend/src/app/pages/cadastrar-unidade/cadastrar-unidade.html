@@ -4,13 +4,15 @@
   <div class="w-full bg-white rounded-lg shadow-sm p-6 sm:p-10 border border-gray-100">
     <h2 class="text-2xl font-bold text-gray-900 mb-8">Cadastrar unidade de consumo</h2>
 
-    <form class="space-y-6">
+    <form class="space-y-6" (submit)="cadastrar()">
 
       <div>
         <label for="nome" class="block text-sm font-semibold text-gray-900 mb-2">Nome</label>
         <input
           type="text"
           id="nome"
+          name="nome"
+          [(ngModel)]="nome"
           placeholder="Digite aqui o nome da unidade ..."
           class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
           required
@@ -22,6 +24,8 @@
         <input
           type="number"
           id="quantidade_minima"
+          name="consumoMinimo"
+          [(ngModel)]="consumoMinimo"
           min="1"
           step="1"
           placeholder="Digite aqui a quantidade mínima ..."
