@@ -20,6 +20,7 @@ import com.finconnect.auth_service.entity.Estoque;
 import com.finconnect.auth_service.entity.Produto;
 import com.finconnect.auth_service.entity.Unidade;
 import com.finconnect.auth_service.exception_handler.exceptions.CategoriaJaExisteException;
+import com.finconnect.auth_service.exception_handler.exceptions.ProdutoJaExisteException;
 import com.finconnect.auth_service.repository.CategoriaRepository;
 import com.finconnect.auth_service.repository.EstoqueRepository;
 import com.finconnect.auth_service.repository.ProdutoRepository;
@@ -80,16 +81,43 @@ public class ProductsService {
     public String salvarProduto(SalvarProduto request) {
         logger.info("tentando salvar produto");
 
+        String nomeNormalizado = request.nome().trim();
+
+        if (this.productsRepository.existsByEstoqueAndNomeIgnoreCase(request.estoque(), nomeNormalizado)) {
+            throw new ProdutoJaExisteException("Já existe um produto com esse nome neste estoque");
+        }
+
         Produto produto = new Produto();
-        produto.setNome(request.nome());
+        produto.setNome(nomeNormalizado);
         produto.setCategoria(request.categoria());
         produto.setTipo(request.tipo());
         produto.setUnidade(request.unidade());
         produto.setEstoque(request.estoque());
+        produto.setAtivo(true);
 
-        this.productsRepository.save(produto);
+        try {
+            this.productsRepository.save(produto);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ProdutoJaExisteException("Já existe um produto com esse nome neste estoque");
+        }
         
         return "Produto salvo com sucesso";
+    }
+
+    public String desativarProduto(UUID id) {
+        logger.info("desativando produto: " + id);
+
+        Produto produto = this.productsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
+        if (!produto.isAtivo()) {
+            return "Produto já está inativo";
+        }
+
+        produto.setAtivo(false);
+        this.productsRepository.save(produto);
+
+        return "Produto desativado com sucesso";
     }
 
     public UUID salvarEstoque(SalvarEstoque request) {

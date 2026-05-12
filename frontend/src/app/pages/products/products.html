@@ -5,15 +5,15 @@
   <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mx-auto">
     <div class="bg-white rounded-lg shadow-sm flex flex-col items-center justify-center py-4 md:py-6">
       <span class="text-[#4e43e7] font-semibold text-sm md:text-base mb-1">Produtos ativos</span>
-      <span class="text-xs md:text-sm text-gray-800">2 produtos ativos</span>
+      <span class="text-xs md:text-sm text-gray-800">{{ totalProdutosAtivos }} produtos ativos</span>
     </div>
     <div class="bg-white rounded-lg shadow-sm flex flex-col items-center justify-center py-4 md:py-6">
       <span class="text-red-600 font-semibold text-sm md:text-base mb-1">Em alerta</span>
-      <span class="text-xs md:text-sm text-gray-800">3 produtos</span>
+      <span class="text-xs md:text-sm text-gray-800">{{ produtosEmAlerta }} produtos</span>
     </div>
     <div class="bg-white rounded-lg shadow-sm flex flex-col items-center justify-center py-4 md:py-6">
       <span class="text-[#4e43e7] font-semibold text-sm md:text-base mb-1">Produtos registrados</span>
-      <span class="text-xs md:text-sm text-gray-800">3 produtos catalogados</span>
+      <span class="text-xs md:text-sm text-gray-800">{{ totalProdutosCadastrados }} produtos catalogados</span>
     </div>
   </div>
 
@@ -54,11 +54,15 @@
             </tr>
           </thead>
           <tbody class="text-sm text-gray-900">
-            @for (p of produtosFiltrados(); track $index; let even = $even) {
-              <tr [class.bg-white]="even" [class.bg-[#ebe3e4]]="!even" class="border-b border-gray-300 last:border-0">
+            @for (p of produtosFiltrados(); track p.id; let even = $even) {
+              <tr
+                [class.bg-white]="even"
+                [class.bg-[#ebe3e4]]="!even"
+                class="border-b border-gray-300 last:border-0"
+              >
                 <td class="py-2.5 px-4 font-medium">{{ p.nome }}</td>
                 <td class="py-2.5 px-4 text-center">{{ p.categoria }}</td>
-                <td class="py-2.5 px-4 text-center">teste</td>
+                <td class="py-2.5 px-4 text-center">{{ p.tipo }}</td>
                 <td class="py-2.5 px-4 text-center">{{ p.quantidade }}</td>
                 <td class="py-2.5 px-4 text-center">{{ p.quantidadeCritica }}</td>
                 <td class="py-2.5 px-4 text-center">{{ p.unidade }}</td>
@@ -67,7 +71,10 @@
                     <button class="text-black hover:text-indigo-600 transition-colors hover:cursor-pointer">
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                     </button>
-                    <button class="text-black hover:text-red-600 transition-colors hover:cursor-pointer">
+                    <button
+                      class="text-black hover:text-red-600 transition-colors hover:cursor-pointer"
+                      (click)="confirmarDesativacao(p)"
+                    >
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                     </button>
                   </div>
@@ -80,7 +87,7 @@
 
       <!-- Cards para Mobile (Visíveis apenas em telas < md) -->
       <div class="md:hidden flex flex-col gap-4">
-        @for (p of produtosFiltrados(); track $index) {
+        @for (p of produtosFiltrados(); track p.id) {
           <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
             <div class="flex justify-between items-start border-b border-gray-200 pb-2 mb-3">
               <div>
@@ -91,7 +98,7 @@
                 <button class="text-black hover:text-indigo-600 p-1">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
-                <button class="text-black hover:text-red-600 p-1">
+                <button class="text-black hover:text-red-600 p-1" (click)="confirmarDesativacao(p)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                 </button>
               </div>
@@ -110,7 +117,7 @@
               </div>
               <div class="flex flex-col">
                 <span class="text-gray-500 text-xs font-semibold uppercase">Tipo</span>
-                <span class="font-medium text-gray-900">Teste</span>
+                <span class="font-medium text-gray-900">{{ p.tipo }}</span>
               </div>
             </div>
           </div>
@@ -119,8 +126,13 @@
 
       <div class="mt-4 flex justify-end">
         <label class="flex items-center gap-2 cursor-pointer text-sm font-medium">
-          <input type="checkbox" class="w-4 h-4 text-indigo-600 bg-white border-gray-800 rounded focus:ring-indigo-500" />
-          Visualizar produtos inativos
+          <input
+            type="checkbox"
+            [(ngModel)]="somenteAtivos"
+            (ngModelChange)="onSomenteAtivosChange()"
+            class="w-4 h-4 text-indigo-600 bg-white border-gray-800 rounded focus:ring-indigo-500"
+          />
+          Exibir apenas ativos
         </label>
       </div>
     </div>

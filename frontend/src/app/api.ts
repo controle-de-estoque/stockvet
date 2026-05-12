@@ -46,4 +46,8 @@ export class Api {
   cadastrarProduto(dados: {nome: string, categoria: string, tipo: string, unidade: string, estoque: string}) {
     return this.http.post(`${this.baseUrl}/produtos`, dados, {responseType: 'text'});
   }
+
+  desativarProduto(id: string) {
+    return this.http.patch(`${this.baseUrl}/produtos/desativar/${id}`, null, { responseType: 'text' });
+  }
 }

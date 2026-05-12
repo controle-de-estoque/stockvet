@@ -17,14 +17,18 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
 
     List<Produto> findByEstoqueAndNomeStartingWith(UUID estoque, String nome);
 
+    boolean existsByEstoqueAndNomeIgnoreCase(UUID estoque, String nome);
+
     @Query("""
         SELECT new com.finconnect.auth_service.dto.ProdutoResponse(
+            p.id,
             p.nome, 
             c.nome, 
             cast(p.tipo as string), 
             u.nome, 
             u.consumoMinimo, 
-            0 
+            0,
+            p.ativo
         ) 
         FROM Produto p 
         LEFT JOIN Categoria c ON p.categoria = c.id 
@@ -35,12 +39,14 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
 
     @Query("""
         SELECT new com.finconnect.auth_service.dto.ProdutoResponse(
+            p.id,
             p.nome, 
             c.nome, 
             cast(p.tipo as string), 
             u.nome, 
             u.consumoMinimo, 
-            0 
+            0,
+            p.ativo
         ) 
         FROM Produto p 
         LEFT JOIN Categoria c ON p.categoria = c.id 

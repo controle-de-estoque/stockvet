@@ -1,4 +1,4 @@
-import { Component, signal, effect, OnDestroy, OnInit } from '@angular/core';
+import { Component, signal, OnDestroy, OnInit } from '@angular/core';
 import { Navbar } from '../../components/navbar/navbar';
 import { Produto } from './Produto';
 import { FormsModule } from "@angular/forms";
@@ -20,6 +20,7 @@ export class Products implements OnDestroy, OnInit {
   private searchSubscription: Subscription;
 
   nomeProduto: string = '';
+  somenteAtivos: boolean = true;
 
   constructor(private api: Api) {
     this.produtosFiltrados.set(this.produtos());
@@ -32,7 +33,17 @@ export class Products implements OnDestroy, OnInit {
     });
   }
   ngOnInit(): void {
-    this.api.buscarProdutos().subscribe(p => this.produtos.set(p));
+    this.api.buscarProdutos().subscribe({
+      next: (produtos: Produto[]) => {
+        const produtosComQuantidade = produtos.map((produto) => ({
+          ...produto,
+          quantidade: this.gerarQuantidadeMock(produto.nome),
+        }));
+        this.produtos.set(produtosComQuantidade);
+        this.executarFiltro(this.nomeProduto);
+      },
+      error: (err) => window.alert(err),
+    });
   }
 
   onSearchChange(value: string) {
@@ -40,13 +51,59 @@ export class Products implements OnDestroy, OnInit {
   }
 
   private executarFiltro(searchTerm: string) {
-    const filtrados = this.produtos().filter((p: Produto) =>
+    let filtrados = this.produtos().filter((p: Produto) =>
       p.nome.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    if (this.somenteAtivos) {
+      filtrados = filtrados.filter((p) => p.ativo);
+    }
+
     this.produtosFiltrados.set(filtrados);
   }
 
   ngOnDestroy() {
     this.searchSubscription.unsubscribe();
+  }
+
+  onSomenteAtivosChange() {
+    this.executarFiltro(this.nomeProduto);
+  }
+
+  confirmarDesativacao(produto: Produto) {
+    if (!window.confirm('Gostaria de desativar este produto?')) {
+      return;
+    }
+
+    this.api.desativarProduto(produto.id).subscribe({
+      next: () => {
+        const atualizados = this.produtos().map((item) =>
+          item.id === produto.id ? { ...item, ativo: false } : item
+        );
+        this.produtos.set(atualizados);
+        this.executarFiltro(this.nomeProduto);
+      },
+      error: (err) => window.alert(err),
+    });
+  }
+
+  get totalProdutosAtivos(): number {
+    return this.produtos().filter((p) => p.ativo).length;
+  }
+
+  get totalProdutosCadastrados(): number {
+    return this.produtos().length;
+  }
+
+  get produtosEmAlerta(): number {
+    return this.produtos().filter((p) => p.ativo && p.quantidade <= p.quantidadeCritica).length;
+  }
+
+  private gerarQuantidadeMock(nome: string): number {
+    let soma = 0;
+    for (let i = 0; i < nome.length; i += 1) {
+      soma = (soma + nome.charCodeAt(i)) % 50;
+    }
+    return soma + 1;
   }
 }
