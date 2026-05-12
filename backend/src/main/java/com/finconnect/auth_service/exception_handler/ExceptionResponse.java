@@ -1,4 +1,4 @@
-package com.finconnect.auth_service.controller;
+package com.finconnect.auth_service.exception_handler;
 
 import java.util.Date;
 

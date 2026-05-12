@@ -40,7 +40,9 @@ public class Users {
     private String firstPetName;
 
     @NotNull
-    private boolean isAdmin;
+    private UUID estoque;
+
+    private UUID admin;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

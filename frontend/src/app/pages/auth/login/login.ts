@@ -37,13 +37,19 @@ export class Login {
         next: (res) => {
 
           try {
+            if (typeof res?.jwt !== 'string') {
+              throw new Error('JWT ausente na resposta');
+            }
+
             const payload = res.jwt.split('.')[1];
             const decoded = JSON.parse(atob(payload));
             localStorage.setItem('email', decoded.sub);
             localStorage.setItem('estoque', res.estoque);
-            localStorage.setItem('token', res);
+            localStorage.setItem('token', res.jwt);
           } catch (e) {
             console.error('Token inválido');
+            localStorage.removeItem('token');
+            return;
           }
 
           this.router.navigate(['/produtos']);

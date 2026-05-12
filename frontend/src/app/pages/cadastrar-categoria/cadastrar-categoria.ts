@@ -17,6 +17,14 @@ export class CadastrarCategoria {
   constructor(private api: Api) {}
 
   cadastrarCategoria() {
-    this.api.cadastrarCategoria({ nome: this.nome, estoque: localStorage.getItem('token')});
+    console.log(this.nome);
+    this.api.cadastrarCategoria({ nome: this.nome, estoque: localStorage.getItem('estoque')!}).subscribe({
+      next: () => {
+        window.alert("Categoria criada com sucesso");
+      },
+      error: () => {
+        window.alert("Falha ao criar categoria");
+      }
+    })
   }
 }

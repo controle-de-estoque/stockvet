@@ -12,6 +12,7 @@
           [(ngModel)]="nome"
           type="text"
           id="nome"
+          name="nome"
           placeholder="Digite aqui o nome da categoria ..."
           class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
           required
@@ -27,7 +28,8 @@
           Voltar
         </button>
         <button
-          type="submit"
+          type="button"
+          (click)="cadastrarCategoria()"
           class="flex-1 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 shadow-sm transition-colors hover:cursor-pointer"
         >
           Cadastrar categoria

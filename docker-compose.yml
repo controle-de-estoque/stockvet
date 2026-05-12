@@ -22,14 +22,14 @@ services:
       dockerfile: Dockerfile
     container_name: stockvet-backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5000/stockvet
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/stockvet
       SPRING_DATASOURCE_USERNAME: stockvet
       SPRING_DATASOURCE_PASSWORD: stockvet
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "true"
       JWT_SEGREDO: stockvet-secret-dev
     ports:
-      - "${BACKEND_PORT:-8081}:8080"
+      - "8080:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -40,7 +40,7 @@ services:
       dockerfile: Dockerfile
     container_name: stockvet-frontend
     ports:
-      - "${FRONTEND_PORT:-4201}:80"
+      - "4200:80"
     depends_on:
       - backend
 

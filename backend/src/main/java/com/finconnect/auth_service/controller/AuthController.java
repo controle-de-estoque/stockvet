@@ -1,7 +1,6 @@
 package com.finconnect.auth_service.controller;
 
 import org.springframework.http.ResponseEntity;
-import java.util.UUID;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finconnect.auth_service.dto.ResetPasswordRequest;
 import com.finconnect.auth_service.dto.SalvarEstoque;
 import com.finconnect.auth_service.dto.SignInRequest;
+import com.finconnect.auth_service.dto.SignInResponse;
 import com.finconnect.auth_service.dto.SignUpRequest;
 import com.finconnect.auth_service.entity.Users;
 import com.finconnect.auth_service.exception_handler.exceptions.PetNameIsIncorrectException;
@@ -44,19 +44,19 @@ public class AuthController {
     private ProductsService productsService;
     
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody SignInRequest request) {
+    public ResponseEntity<SignInResponse> authenticateUser(@RequestBody SignInRequest request) throws BadRequestException {
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.username(), request.password())
         );
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
-        
-        return ResponseEntity.ok(jwt);
+
+        return ResponseEntity.ok().body(new SignInResponse(jwt, this.usersRepository.findEstoqueByEmail(request.username()).orElseThrow(() -> new BadRequestException("Usuário não cadastrado"))));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UUID> registerUser(@RequestBody SignUpRequest request) throws BadRequestException {
+    public ResponseEntity<String> registerUser(@RequestBody SignUpRequest request) throws BadRequestException {
         if(usersRepository.findByEmail(request.email()).isPresent()) {
             throw new UserAlredyExistsException("Usuário já cadastrado");
         }
@@ -67,10 +67,11 @@ public class AuthController {
         newUser.setEmail(request.email());
         newUser.setPassword(encoder.encode(request.password()));
         newUser.setFirstPetName(request.firstPetName());
+        newUser.setEstoque(productsService.salvarEstoque(new SalvarEstoque("StockVet")));
 
         usersRepository.save(newUser);
 
-        return ResponseEntity.ok(productsService.salvarEstoque(new SalvarEstoque("StockVet")));
+        return ResponseEntity.ok("Estoque criado: " + newUser.getEstoque().toString());
     }
 
     @PostMapping("reset-password")
@@ -86,5 +87,4 @@ public class AuthController {
         this.usersRepository.save(user);
         return ResponseEntity.ok("Password changed successfully");
     }
-    
 }

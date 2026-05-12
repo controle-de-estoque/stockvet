@@ -89,24 +89,16 @@ public class ProductsService {
     public List<ProdutoResponse> findAllProdutosFromEstoque(UUID id) {
         logger.info("buscando produtos do estoque: " + id);
 
-        var produtos = this.productsRepository.findAllByEstoque(id);
-        var response = produtos.stream()
-            .map(p -> new ProdutoResponse(p.getNome(), p.getCategoria(), p.getTipo(), p.getUnidade()))
-            .toList();
-
+        var produtos = this.productsRepository.findProdutosResponseByEstoque(id);
         
-        return response;
+        return produtos;
     }
 
     public List<ProdutoResponse> findAllProdutosFromEstoqueComecandoComNome(UUID id, String nome) {
         logger.info("buscando produtos do estoque comecando com : " + nome);
 
-        var produtos = this.productsRepository.findByEstoqueAndNomeStartingWith(id, nome);
-        var response = produtos.stream()
-            .map(p -> new ProdutoResponse(p.getNome(), p.getCategoria(), p.getTipo(), p.getUnidade()))
-            .toList();
-
-        
-        return response;
+        var produtos = this.productsRepository.findProdutosResponseByEstoqueAndNome(id, nome);
+    
+        return produtos;
     }
 }

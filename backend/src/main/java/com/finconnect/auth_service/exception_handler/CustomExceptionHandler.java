@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import com.finconnect.auth_service.controller.ExceptionResponse;
+
 import com.finconnect.auth_service.exception_handler.exceptions.PetNameIsIncorrectException;
 import com.finconnect.auth_service.exception_handler.exceptions.UserAlredyExistsException;
 
