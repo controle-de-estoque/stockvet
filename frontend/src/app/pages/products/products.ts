@@ -16,14 +16,19 @@ export class Products implements OnDestroy, OnInit {
 
   produtos = signal<Produto[]>([]);
   produtosFiltrados = signal<Produto[]>([]);
+  produtosPaginados = signal<Produto[]>([]);
   private searchSubject = new Subject<string>();
   private searchSubscription: Subscription;
 
   nomeProduto: string = '';
   somenteAtivos: boolean = true;
+  paginaAtual: number = 1;
+  tamanhoPagina: number = 10;
+  totalPaginas: number = 1;
 
   constructor(private api: Api) {
     this.produtosFiltrados.set(this.produtos());
+    this.produtosPaginados.set(this.produtos());
 
     this.searchSubscription = this.searchSubject.pipe(
       debounceTime(1000),
@@ -50,7 +55,11 @@ export class Products implements OnDestroy, OnInit {
     this.searchSubject.next(value);
   }
 
-  private executarFiltro(searchTerm: string) {
+  private executarFiltro(searchTerm: string, resetarPagina: boolean = true) {
+    if (resetarPagina) {
+      this.paginaAtual = 1;
+    }
+
     let filtrados = this.produtos().filter((p: Produto) =>
       p.nome.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -60,6 +69,7 @@ export class Products implements OnDestroy, OnInit {
     }
 
     this.produtosFiltrados.set(filtrados);
+    this.aplicarPaginacao(filtrados);
   }
 
   ngOnDestroy() {
@@ -99,11 +109,40 @@ export class Products implements OnDestroy, OnInit {
     return this.produtos().filter((p) => p.ativo && p.quantidade <= p.quantidadeCritica).length;
   }
 
+  irParaPagina(pagina: number) {
+    if (pagina < 1 || pagina > this.totalPaginas) {
+      return;
+    }
+
+    this.paginaAtual = pagina;
+    this.aplicarPaginacao(this.produtosFiltrados());
+  }
+
+  paginaAnterior() {
+    this.irParaPagina(this.paginaAtual - 1);
+  }
+
+  proximaPagina() {
+    this.irParaPagina(this.paginaAtual + 1);
+  }
+
   private gerarQuantidadeMock(nome: string): number {
     let soma = 0;
     for (let i = 0; i < nome.length; i += 1) {
       soma = (soma + nome.charCodeAt(i)) % 50;
     }
     return soma + 1;
+  }
+
+  private aplicarPaginacao(produtos: Produto[]) {
+    this.totalPaginas = Math.max(1, Math.ceil(produtos.length / this.tamanhoPagina));
+
+    if (this.paginaAtual > this.totalPaginas) {
+      this.paginaAtual = this.totalPaginas;
+    }
+
+    const inicio = (this.paginaAtual - 1) * this.tamanhoPagina;
+    const fim = inicio + this.tamanhoPagina;
+    this.produtosPaginados.set(produtos.slice(inicio, fim));
   }
 }

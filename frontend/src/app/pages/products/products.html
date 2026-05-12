@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div class="bg-white p-4 md:p-6 flex flex-col items-center gap-6 rounded-md shadow">
+  <div class="bg-white p-4 md:p-6 flex flex-col items-center gap-6 rounded-md shadow mb-12">
 
     <h2 class="self-start font-bold text-lg md:text-xl">Visualizar produtos</h2>
 
@@ -54,7 +54,7 @@
             </tr>
           </thead>
           <tbody class="text-sm text-gray-900">
-            @for (p of produtosFiltrados(); track p.id; let even = $even) {
+            @for (p of produtosPaginados(); track p.id; let even = $even) {
               <tr
                 [class.bg-white]="even"
                 [class.bg-[#ebe3e4]]="!even"
@@ -87,7 +87,7 @@
 
       <!-- Cards para Mobile (Visíveis apenas em telas < md) -->
       <div class="md:hidden flex flex-col gap-4">
-        @for (p of produtosFiltrados(); track p.id) {
+        @for (p of produtosPaginados(); track p.id) {
           <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
             <div class="flex justify-between items-start border-b border-gray-200 pb-2 mb-3">
               <div>
@@ -138,13 +138,29 @@
     </div>
 
     <div class="flex justify-center items-center gap-3">
-      <button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors hover:cursor-pointer">
+      <button
+        type="button"
+        (click)="paginaAnterior()"
+        [disabled]="paginaAtual === 1"
+        [class.opacity-50]="paginaAtual === 1"
+        [class.cursor-not-allowed]="paginaAtual === 1"
+        [class.cursor-pointer]="paginaAtual > 1"
+        class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </button>
-      <button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm font-semibold hover:bg-gray-50 transition-colors">
-        1
+      <button type="button" class="w-12 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm font-semibold">
+        {{ paginaAtual }}
       </button>
-      <button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors hover:cursor-pointer">
+      <button
+        type="button"
+        (click)="proximaPagina()"
+        [disabled]="paginaAtual === totalPaginas"
+        [class.opacity-50]="paginaAtual === totalPaginas"
+        [class.cursor-not-allowed]="paginaAtual === totalPaginas"
+        [class.cursor-pointer]="paginaAtual < totalPaginas"
+        class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
       </button>
     </div>
