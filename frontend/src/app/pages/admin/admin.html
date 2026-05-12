@@ -1,1 +1,215 @@
-<p>admin works!</p>
+<div class="flex flex-col w-full md:max-w-[80%] mx-auto gap-10 p-4 md:p-0">
+	<app-navbar></app-navbar>
+
+	<section class="bg-white rounded-lg shadow-sm p-6 sm:p-8 border border-gray-100">
+		<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+			<h2 class="text-xl font-bold text-gray-900">Usuarios</h2>
+			<a
+				routerLink="/cadastrar-usuario"
+				class="w-full sm:w-auto bg-[#4e43e7] hover:bg-indigo-700 text-white font-medium text-sm py-2.5 px-6 rounded transition-colors text-center"
+			>
+				Cadastrar usuario
+			</a>
+		</div>
+
+		<div class="hidden md:block border border-gray-300 rounded overflow-hidden">
+			<table class="w-full text-left border-collapse min-w-max">
+				<thead class="bg-[#4e43e7] text-white text-sm">
+					<tr>
+						<th class="py-2.5 px-4 font-medium">Tipo</th>
+						<th class="py-2.5 px-4 font-medium text-center">Movimentado por</th>
+						<th class="py-2.5 px-4 font-medium text-center">Data</th>
+						<th class="py-2.5 px-4 font-medium text-center">Hora</th>
+						<th class="py-2.5 px-4 font-medium text-center">Cedido a</th>
+						<th class="py-2.5 px-4 font-medium text-center">Acoes</th>
+					</tr>
+				</thead>
+				<tbody class="text-sm text-gray-900">
+					@for (item of usuarios; track $index; let even = $even) {
+						<tr [class.bg-white]="even" [class.bg-[#ebe3e4]]="!even" class="border-b border-gray-300 last:border-0">
+							<td class="py-2.5 px-4 font-medium">{{ item.tipo }}</td>
+							<td class="py-2.5 px-4 text-center">{{ item.movimentadoPor }}</td>
+							<td class="py-2.5 px-4 text-center">{{ item.data }}</td>
+							<td class="py-2.5 px-4 text-center">{{ item.hora }}</td>
+							<td class="py-2.5 px-4 text-center">{{ item.cedidoA }}</td>
+							<td class="py-2.5 px-4 text-center">
+								<div class="flex justify-center items-center gap-2">
+									<button class="text-black hover:text-indigo-600 transition-colors hover:cursor-pointer" type="button">
+										<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696C3.263 8.25 7.214 5 12 5c4.786 0 8.737 3.25 9.938 6.652a1 1 0 0 1 0 .696C20.737 15.75 16.786 19 12 19c-4.786 0-8.737-3.25-9.938-6.652"></path><circle cx="12" cy="12" r="3"></circle></svg>
+									</button>
+									<button class="text-black hover:text-indigo-600 transition-colors hover:cursor-pointer" type="button">
+										<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+									</button>
+									<button class="text-black hover:text-red-600 transition-colors hover:cursor-pointer" type="button">
+										<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+									</button>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="md:hidden flex flex-col gap-4">
+			@for (item of usuarios; track $index) {
+				<div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
+					<div class="flex justify-between items-start border-b border-gray-200 pb-2 mb-3">
+						<div>
+							<h3 class="font-bold text-[#4e43e7] text-lg">{{ item.tipo }}</h3>
+							<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">{{ item.data }} - {{ item.hora }}</span>
+						</div>
+						<div class="flex gap-2">
+							<button class="text-black hover:text-indigo-600 p-1" type="button">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696C3.263 8.25 7.214 5 12 5c4.786 0 8.737 3.25 9.938 6.652a1 1 0 0 1 0 .696C20.737 15.75 16.786 19 12 19c-4.786 0-8.737-3.25-9.938-6.652"></path><circle cx="12" cy="12" r="3"></circle></svg>
+							</button>
+							<button class="text-black hover:text-indigo-600 p-1" type="button">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+							</button>
+							<button class="text-black hover:text-red-600 p-1" type="button">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+							</button>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-2 gap-y-3 text-sm">
+						<div class="flex flex-col">
+							<span class="text-gray-500 text-xs font-semibold uppercase">Movimentado por</span>
+							<span class="font-medium text-gray-900">{{ item.movimentadoPor }}</span>
+						</div>
+						<div class="flex flex-col">
+							<span class="text-gray-500 text-xs font-semibold uppercase">Cedido a</span>
+							<span class="font-medium text-gray-900">{{ item.cedidoA }}</span>
+						</div>
+						<div class="flex flex-col">
+							<span class="text-gray-500 text-xs font-semibold uppercase">Data</span>
+							<span class="font-medium text-gray-900">{{ item.data }}</span>
+						</div>
+						<div class="flex flex-col">
+							<span class="text-gray-500 text-xs font-semibold uppercase">Hora</span>
+							<span class="font-medium text-gray-900">{{ item.hora }}</span>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+
+		<div class="mt-6 flex justify-center items-center gap-3">
+			<button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors hover:cursor-pointer" type="button">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+			</button>
+			<button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm font-semibold hover:bg-gray-50 transition-colors" type="button">
+				1
+			</button>
+			<button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors hover:cursor-pointer" type="button">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+			</button>
+		</div>
+	</section>
+
+	<section class="bg-white rounded-lg shadow-sm p-6 sm:p-8 border border-gray-100">
+		<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+			<h2 class="text-xl font-bold text-gray-900">Cessionarios</h2>
+			<a
+				routerLink="/cadastrar-cessionario"
+				class="w-full sm:w-auto bg-[#4e43e7] hover:bg-indigo-700 text-white font-medium text-sm py-2.5 px-6 rounded transition-colors text-center"
+			>
+				Cadastrar cessionario
+			</a>
+		</div>
+
+		<div class="hidden md:block border border-gray-300 rounded overflow-hidden">
+			<table class="w-full text-left border-collapse min-w-max">
+				<thead class="bg-[#4e43e7] text-white text-sm">
+					<tr>
+						<th class="py-2.5 px-4 font-medium">Tipo</th>
+						<th class="py-2.5 px-4 font-medium text-center">Movimentado por</th>
+						<th class="py-2.5 px-4 font-medium text-center">Data</th>
+						<th class="py-2.5 px-4 font-medium text-center">Hora</th>
+						<th class="py-2.5 px-4 font-medium text-center">Cedido a</th>
+						<th class="py-2.5 px-4 font-medium text-center">Acoes</th>
+					</tr>
+				</thead>
+				<tbody class="text-sm text-gray-900">
+					@for (item of cessionarios; track $index; let even = $even) {
+						<tr [class.bg-white]="even" [class.bg-[#ebe3e4]]="!even" class="border-b border-gray-300 last:border-0">
+							<td class="py-2.5 px-4 font-medium">{{ item.tipo }}</td>
+							<td class="py-2.5 px-4 text-center">{{ item.movimentadoPor }}</td>
+							<td class="py-2.5 px-4 text-center">{{ item.data }}</td>
+							<td class="py-2.5 px-4 text-center">{{ item.hora }}</td>
+							<td class="py-2.5 px-4 text-center">{{ item.cedidoA }}</td>
+							<td class="py-2.5 px-4 text-center">
+								<div class="flex justify-center items-center gap-2">
+									<button class="text-black hover:text-indigo-600 transition-colors hover:cursor-pointer" type="button">
+										<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696C3.263 8.25 7.214 5 12 5c4.786 0 8.737 3.25 9.938 6.652a1 1 0 0 1 0 .696C20.737 15.75 16.786 19 12 19c-4.786 0-8.737-3.25-9.938-6.652"></path><circle cx="12" cy="12" r="3"></circle></svg>
+									</button>
+									<button class="text-black hover:text-indigo-600 transition-colors hover:cursor-pointer" type="button">
+										<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+									</button>
+									<button class="text-black hover:text-red-600 transition-colors hover:cursor-pointer" type="button">
+										<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+									</button>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="md:hidden flex flex-col gap-4">
+			@for (item of cessionarios; track $index) {
+				<div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
+					<div class="flex justify-between items-start border-b border-gray-200 pb-2 mb-3">
+						<div>
+							<h3 class="font-bold text-[#4e43e7] text-lg">{{ item.tipo }}</h3>
+							<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">{{ item.data }} - {{ item.hora }}</span>
+						</div>
+						<div class="flex gap-2">
+							<button class="text-black hover:text-indigo-600 p-1" type="button">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696C3.263 8.25 7.214 5 12 5c4.786 0 8.737 3.25 9.938 6.652a1 1 0 0 1 0 .696C20.737 15.75 16.786 19 12 19c-4.786 0-8.737-3.25-9.938-6.652"></path><circle cx="12" cy="12" r="3"></circle></svg>
+							</button>
+							<button class="text-black hover:text-indigo-600 p-1" type="button">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+							</button>
+							<button class="text-black hover:text-red-600 p-1" type="button">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+							</button>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-2 gap-y-3 text-sm">
+						<div class="flex flex-col">
+							<span class="text-gray-500 text-xs font-semibold uppercase">Movimentado por</span>
+							<span class="font-medium text-gray-900">{{ item.movimentadoPor }}</span>
+						</div>
+						<div class="flex flex-col">
+							<span class="text-gray-500 text-xs font-semibold uppercase">Cedido a</span>
+							<span class="font-medium text-gray-900">{{ item.cedidoA }}</span>
+						</div>
+						<div class="flex flex-col">
+							<span class="text-gray-500 text-xs font-semibold uppercase">Data</span>
+							<span class="font-medium text-gray-900">{{ item.data }}</span>
+						</div>
+						<div class="flex flex-col">
+							<span class="text-gray-500 text-xs font-semibold uppercase">Hora</span>
+							<span class="font-medium text-gray-900">{{ item.hora }}</span>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+
+		<div class="mt-6 flex justify-center items-center gap-3">
+			<button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors hover:cursor-pointer" type="button">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+			</button>
+			<button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm font-semibold hover:bg-gray-50 transition-colors" type="button">
+				1
+			</button>
+			<button class="w-10 h-10 flex items-center justify-center bg-white border border-[#4e43e7] text-[#4e43e7] rounded shadow-sm hover:bg-gray-50 transition-colors hover:cursor-pointer" type="button">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+			</button>
+		</div>
+	</section>
+</div>
