@@ -1,0 +1,381 @@
+<div class="flex flex-col w-full md:max-w-[80%] mx-auto gap-12 p-4 md:p-0">
+	<app-navbar></app-navbar>
+
+	<div class="w-full bg-white rounded-lg shadow-sm p-6 sm:p-10 border border-gray-100">
+		<div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+			<div
+				class="flex items-center gap-2 text-sm font-semibold"
+				[class.text-indigo-600]="isStepInfo()"
+				[class.text-gray-400]="!isStepInfo()"
+			>
+				<span
+					class="w-2.5 h-2.5 rounded-full"
+					[class.bg-indigo-600]="isStepInfo()"
+					[class.bg-gray-300]="!isStepInfo()"
+				></span>
+				<span>1. Informacoes</span>
+			</div>
+			<div class="flex-1 h-px bg-gray-200"></div>
+			<div
+				class="flex items-center gap-2 text-sm font-semibold"
+				[class.text-indigo-600]="isStepProdutos()"
+				[class.text-gray-400]="!isStepProdutos()"
+			>
+				<span
+					class="w-2.5 h-2.5 rounded-full"
+					[class.bg-indigo-600]="isStepProdutos()"
+					[class.bg-gray-300]="!isStepProdutos()"
+				></span>
+				<span>2. Produtos &amp; Lotes</span>
+			</div>
+		</div>
+
+		<h2 class="text-2xl font-bold text-gray-900 mb-8">Registrar movimentacao</h2>
+
+		@if (currentStep === 'info') {
+			<div class="space-y-6">
+				<div>
+					<label for="tipo" class="block text-sm font-semibold text-gray-900 mb-2">Tipo</label>
+					<div class="relative">
+						<select
+							id="tipo"
+							name="tipoMovimentacao"
+							[(ngModel)]="tipoMovimentacao"
+							(ngModelChange)="onTipoChange()"
+							class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
+							required
+						>
+							<option value="" disabled>Selecione o tipo da movimentacao ...</option>
+							<option value="entrada">Entrada</option>
+							<option value="saida">Saida</option>
+						</select>
+						<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+							<svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+								<path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+							</svg>
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<label for="data_movimentacao" class="block text-sm font-semibold text-gray-900 mb-2">Data da movimentacao</label>
+					<input
+						type="date"
+						id="data_movimentacao"
+						name="dataMovimentacao"
+						[(ngModel)]="dataMovimentacao"
+						class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+						required
+					>
+				</div>
+
+				<div>
+					<label for="horario_movimentacao" class="block text-sm font-semibold text-gray-900 mb-2">Horario da movimentacao</label>
+					<input
+						type="time"
+						id="horario_movimentacao"
+						name="horarioMovimentacao"
+						[(ngModel)]="horarioMovimentacao"
+						class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+						required
+					>
+				</div>
+
+				<div>
+					<div class="flex justify-between items-end mb-2">
+						<label for="cessionario" class="block text-sm font-semibold text-gray-900">Cedido a</label>
+						<button
+							type="button"
+							class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors hover:cursor-pointer"
+						>
+							+ Adicionar cessionario
+						</button>
+					</div>
+					<div class="relative">
+						<select
+							id="cessionario"
+							name="cessionario"
+							[(ngModel)]="cessionarioId"
+							class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
+							required
+						>
+							<option value="" disabled>Selecione o cessionario ...</option>
+							<option value="clinica">Clinica Central</option>
+							<option value="hospital">Hospital Vet Mais</option>
+						</select>
+						<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+							<svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+								<path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+							</svg>
+						</div>
+					</div>
+				</div>
+
+				<div class="flex flex-col sm:flex-row justify-between gap-4 pt-4">
+					<a
+						routerLink="/movimentacoes"
+						class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-md hover:bg-gray-50 transition-colors hover:cursor-pointer text-center"
+					>
+						Voltar
+					</a>
+					<button
+						type="button"
+						(click)="irParaProdutos()"
+						[disabled]="!podeIrParaProdutos()"
+						class="w-full sm:w-auto px-6 py-3 text-white font-semibold rounded-md transition-colors"
+						[class.bg-indigo-600]="podeIrParaProdutos()"
+						[class.bg-indigo-300]="!podeIrParaProdutos()"
+						[class.cursor-not-allowed]="!podeIrParaProdutos()"
+					>
+						Adicionar produtos a movimentacao
+					</button>
+				</div>
+			</div>
+		}
+
+		@if (currentStep === 'produtos') {
+			<div class="space-y-6">
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<div class="md:col-span-2">
+						<label for="produto" class="block text-sm font-semibold text-gray-900 mb-2">Produto</label>
+						<div class="relative">
+							<select
+								id="produto"
+								name="produto"
+								[(ngModel)]="produtoSelecionadoId"
+								(ngModelChange)="onProdutoSelecionado()"
+								class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
+							>
+								<option value="" disabled>Selecione um produto ...</option>
+								@for (produto of produtos; track produto.id) {
+									<option [value]="produto.id">{{ produto.nome }}</option>
+								}
+							</select>
+							<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+								<svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+									<path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+								</svg>
+							</div>
+						</div>
+					</div>
+					@if (tipoMovimentacao === 'saida') {
+						<div>
+							<label for="quantidade" class="block text-sm font-semibold text-gray-900 mb-2">Quantidade</label>
+							<input
+								type="number"
+								id="quantidade"
+								name="quantidadeSelecionada"
+								[(ngModel)]="quantidadeSelecionada"
+								min="1"
+								step="1"
+								placeholder="0"
+								class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+							>
+						</div>
+					}
+				</div>
+
+				@if (tipoMovimentacao === 'saida') {
+					<div class="flex justify-end">
+						<button
+							type="button"
+							(click)="adicionarSaida()"
+							[disabled]="!podeAdicionarSaida()"
+							class="px-6 py-2.5 font-semibold rounded-md transition-colors"
+							[class.bg-indigo-600]="podeAdicionarSaida()"
+							[class.text-white]="podeAdicionarSaida()"
+							[class.bg-gray-100]="!podeAdicionarSaida()"
+							[class.text-gray-500]="!podeAdicionarSaida()"
+							[class.cursor-not-allowed]="!podeAdicionarSaida()"
+						>
+							Adicionar a lista
+						</button>
+					</div>
+				}
+
+				<div class="hidden md:block border border-gray-300 rounded overflow-hidden">
+					<table class="w-full text-left border-collapse min-w-max">
+						<thead class="bg-[#4e43e7] text-white text-sm">
+							<tr>
+								<th class="py-2.5 px-4 font-medium">Nome</th>
+								<th class="py-2.5 px-4 font-medium text-center">Quantidade</th>
+								@if (mostrarLoteColuna()) {
+									<th class="py-2.5 px-4 font-medium text-center">Lote</th>
+								}
+								<th class="py-2.5 px-4 font-medium text-center">Acoes</th>
+							</tr>
+						</thead>
+						<tbody class="text-sm text-gray-900">
+							@if (itensMovimentacao.length === 0) {
+								<tr class="bg-white">
+									<td
+										[attr.colspan]="mostrarLoteColuna() ? 4 : 3"
+										class="py-4 px-4 text-center text-gray-500"
+									>
+										Nenhum produto adicionado
+									</td>
+								</tr>
+							} @else {
+								@for (item of itensMovimentacao; track item.id; let even = $even) {
+									<tr [class.bg-white]="even" [class.bg-[#ebe3e4]]="!even" class="border-b border-gray-300 last:border-0">
+										<td class="py-2.5 px-4 font-medium">{{ item.nome }}</td>
+										<td class="py-2.5 px-4 text-center">{{ item.quantidade }}</td>
+										@if (mostrarLoteColuna()) {
+											<td class="py-2.5 px-4 text-center">{{ item.lote || '-' }}</td>
+										}
+										<td class="py-2.5 px-4 text-center">
+											<button
+												type="button"
+												(click)="removerItem(item.id)"
+												class="text-black hover:text-red-600 transition-colors hover:cursor-pointer"
+											>
+												<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+											</button>
+										</td>
+									</tr>
+								}
+							}
+						</tbody>
+					</table>
+				</div>
+
+				<div class="md:hidden flex flex-col gap-4">
+					@if (itensMovimentacao.length === 0) {
+						<div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm text-center text-sm text-gray-500">
+							Nenhum produto adicionado
+						</div>
+					} @else {
+						@for (item of itensMovimentacao; track item.id) {
+							<div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
+								<div class="flex justify-between items-start border-b border-gray-200 pb-2 mb-3">
+									<div>
+										<h3 class="font-bold text-[#4e43e7] text-lg">{{ item.nome }}</h3>
+										<span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">Qtd: {{ item.quantidade }}</span>
+									</div>
+									<button
+										type="button"
+										(click)="removerItem(item.id)"
+										class="text-black hover:text-red-600 p-1"
+									>
+										<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+									</button>
+								</div>
+
+								<div class="grid grid-cols-2 gap-y-3 text-sm">
+									<div class="flex flex-col">
+										<span class="text-gray-500 text-xs font-semibold uppercase">Quantidade</span>
+										<span class="font-medium text-gray-900">{{ item.quantidade }}</span>
+									</div>
+									@if (mostrarLoteColuna()) {
+										<div class="flex flex-col">
+											<span class="text-gray-500 text-xs font-semibold uppercase">Lote</span>
+											<span class="font-medium text-gray-900">{{ item.lote || '-' }}</span>
+										</div>
+									}
+								</div>
+							</div>
+						}
+					}
+				</div>
+
+				<div class="flex flex-col sm:flex-row justify-between gap-4 pt-4">
+					<button
+						type="button"
+						(click)="voltarParaInfo()"
+						class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-md hover:bg-gray-50 transition-colors hover:cursor-pointer"
+					>
+						Voltar
+					</button>
+					<button
+						type="button"
+						[disabled]="!podeRegistrar()"
+						class="w-full sm:w-auto px-6 py-3 text-white font-semibold rounded-md transition-colors"
+						[class.bg-indigo-600]="podeRegistrar()"
+						[class.bg-indigo-300]="!podeRegistrar()"
+						[class.cursor-not-allowed]="!podeRegistrar()"
+					>
+						Registrar movimentacao
+					</button>
+				</div>
+			</div>
+		}
+
+		@if (currentStep === 'lote') {
+			<div class="space-y-6">
+				<div class="bg-indigo-50 border border-indigo-100 text-indigo-700 text-sm rounded-md px-4 py-3">
+					Entrada de produto: cadastre o lote para registrar o estoque.
+				</div>
+
+				<div>
+					<label for="produto_lote" class="block text-sm font-semibold text-gray-900 mb-2">Produto</label>
+					<input
+						type="text"
+						id="produto_lote"
+						name="produtoLote"
+						[value]="produtoSelecionado?.nome || ''"
+						disabled
+						class="w-full border border-gray-200 rounded-md px-4 py-2.5 bg-gray-100 text-gray-500 cursor-not-allowed"
+					>
+				</div>
+
+				<div>
+					<label for="marca" class="block text-sm font-semibold text-gray-900 mb-2">Marca</label>
+					<input
+						type="text"
+						id="marca"
+						name="loteMarca"
+						[(ngModel)]="loteMarca"
+						placeholder="Digite aqui a marca ..."
+						class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+					>
+				</div>
+
+				<div>
+					<label for="quantidade_lote" class="block text-sm font-semibold text-gray-900 mb-2">Quantidade</label>
+					<input
+						type="number"
+						id="quantidade_lote"
+						name="loteQuantidade"
+						[(ngModel)]="loteQuantidade"
+						min="1"
+						step="1"
+						placeholder="0"
+						class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+					>
+				</div>
+
+				<div>
+					<label for="validade" class="block text-sm font-semibold text-gray-900 mb-2">Data de validade (opcional)</label>
+					<input
+						type="date"
+						id="validade"
+						name="loteValidade"
+						[(ngModel)]="loteValidade"
+						class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+					>
+				</div>
+
+				<div class="flex flex-col sm:flex-row justify-between gap-4 pt-4">
+					<button
+						type="button"
+						(click)="voltarParaProdutos()"
+						class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-md hover:bg-gray-50 transition-colors hover:cursor-pointer"
+					>
+						Voltar
+					</button>
+					<button
+						type="button"
+						(click)="adicionarLote()"
+						[disabled]="!podeAdicionarLote()"
+						class="w-full sm:w-auto px-6 py-3 text-white font-semibold rounded-md transition-colors"
+						[class.bg-indigo-600]="podeAdicionarLote()"
+						[class.bg-indigo-300]="!podeAdicionarLote()"
+						[class.cursor-not-allowed]="!podeAdicionarLote()"
+					>
+						Cadastrar lote e adicionar
+					</button>
+				</div>
+			</div>
+		}
+	</div>
+</div>

@@ -6,6 +6,8 @@ import { Products } from './pages/products/products';
 import { CadastrarProduto } from './pages/cadastrar-produto/cadastrar-produto';
 import { CadastrarUnidade } from './pages/cadastrar-unidade/cadastrar-unidade';
 import { CadastrarCategoria } from './pages/cadastrar-categoria/cadastrar-categoria';
+import { Movimentacoes } from './pages/movimentacoes/movimentacoes';
+import { CadastrarMovimentacao } from './pages/cadastrar-movimentacao/cadastrar-movimentacao';
 
 export const routes: Routes = [
   {
@@ -23,6 +25,14 @@ export const routes: Routes = [
   {
     path: 'produtos',
     component: Products
+  },
+  {
+    path: 'movimentacoes/novo',
+    component: CadastrarMovimentacao
+  },
+  {
+    path: 'movimentacoes',
+    component: Movimentacoes
   },
   {
     path: 'cadastrar-produtos',
