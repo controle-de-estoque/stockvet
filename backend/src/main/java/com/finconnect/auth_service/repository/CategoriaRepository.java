@@ -10,4 +10,6 @@ import com.finconnect.auth_service.entity.Categoria;
 public interface CategoriaRepository extends JpaRepository<Categoria, UUID> {
 
     List<Categoria> findAllByEstoque(UUID id);
+
+    boolean existsByEstoqueAndNomeIgnoreCase(UUID estoque, String nome);
 }

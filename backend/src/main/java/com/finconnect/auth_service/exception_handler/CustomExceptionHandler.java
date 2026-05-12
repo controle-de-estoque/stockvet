@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import com.finconnect.auth_service.exception_handler.exceptions.CategoriaJaExisteException;
 import com.finconnect.auth_service.exception_handler.exceptions.PetNameIsIncorrectException;
 import com.finconnect.auth_service.exception_handler.exceptions.UserAlredyExistsException;
 
@@ -44,5 +45,16 @@ public class CustomExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(CategoriaJaExisteException.class)
+    public ResponseEntity<ExceptionResponse> handleCategoriaJaExisteException(Exception ex, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse(
+            new Date(),
+            ex.getMessage(),
+            request.getDescription(false)
+        );
+
+        return ResponseEntity.status(409).body(response);
     }
 }

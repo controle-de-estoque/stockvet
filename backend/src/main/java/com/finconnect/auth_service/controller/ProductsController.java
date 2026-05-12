@@ -10,6 +10,7 @@ import com.finconnect.auth_service.service.ProductsService;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +33,7 @@ public class ProductsController {
 
     @PostMapping("/categoria")
     public ResponseEntity<String> salvarCategoria(@RequestBody SalvarCategoria request) {
-        return ResponseEntity.ok().body(this.productsService.salvarCategoria(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.productsService.salvarCategoria(request));
     }
 
     @PostMapping()

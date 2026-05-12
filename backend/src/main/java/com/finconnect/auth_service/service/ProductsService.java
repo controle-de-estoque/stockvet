@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.finconnect.auth_service.dto.ProdutoResponse;
 import com.finconnect.auth_service.dto.SalvarCategoria;
@@ -15,6 +16,7 @@ import com.finconnect.auth_service.entity.Categoria;
 import com.finconnect.auth_service.entity.Estoque;
 import com.finconnect.auth_service.entity.Produto;
 import com.finconnect.auth_service.entity.Unidade;
+import com.finconnect.auth_service.exception_handler.exceptions.CategoriaJaExisteException;
 import com.finconnect.auth_service.repository.CategoriaRepository;
 import com.finconnect.auth_service.repository.EstoqueRepository;
 import com.finconnect.auth_service.repository.ProdutoRepository;
@@ -53,11 +55,21 @@ public class ProductsService {
     public String salvarCategoria(SalvarCategoria request) {
         logger.info("tentando salvar categoria");
 
+        String nomeNormalizado = request.nome().trim();
+
+        if (this.categoriaRepository.existsByEstoqueAndNomeIgnoreCase(request.estoque(), nomeNormalizado)) {
+            throw new CategoriaJaExisteException("Já existe uma categoria com esse nome neste estoque");
+        }
+
         Categoria categoria = new Categoria();
-        categoria.setNome(request.nome());
+        categoria.setNome(nomeNormalizado);
         categoria.setEstoque(request.estoque());
 
-        this.categoriaRepository.save(categoria);
+        try {
+            this.categoriaRepository.save(categoria);
+        } catch (DataIntegrityViolationException ex) {
+            throw new CategoriaJaExisteException("Já existe uma categoria com esse nome neste estoque");
+        }
         
         return "Categoria salva com sucesso";
     }
