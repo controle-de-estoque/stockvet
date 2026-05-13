@@ -29,4 +29,7 @@ public class Lote {
 
     @NotNull
     private UUID estoque;
+
+    @NotNull
+    private UUID produto;
 }

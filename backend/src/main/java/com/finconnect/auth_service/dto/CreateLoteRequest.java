@@ -16,6 +16,9 @@ public record CreateLoteRequest(
     int quantidadeRecebida,
     
     @NotNull
-    UUID estoque
+    UUID estoque,
+
+    @NotNull
+    UUID produto
 
 ) {}

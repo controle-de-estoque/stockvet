@@ -39,7 +39,8 @@ public class LoteService {
             request.dataValidade(),
             request.quantidadeRecebida(),
             request.quantidadeRecebida(), //no momento da criação do lote, a quantidade atual é a mesma recebida
-            request.estoque()
+            request.estoque(),
+            request.produto()
         );
 
         var salvo = this.repository.save(lote);

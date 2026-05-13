@@ -31,7 +31,7 @@ public class Produto {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Tipo tipo;
+    private TipoProduto tipo;
 
     @NotNull
     private UUID unidade;
