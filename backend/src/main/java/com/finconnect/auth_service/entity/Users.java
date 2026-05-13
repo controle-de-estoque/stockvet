@@ -42,7 +42,8 @@ public class Users {
     @NotNull
     private UUID estoque;
 
-    private UUID admin;
+    @NotNull
+    private boolean admin;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

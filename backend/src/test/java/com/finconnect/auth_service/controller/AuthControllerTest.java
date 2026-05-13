@@ -2,18 +2,16 @@ package com.finconnect.auth_service.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -243,7 +241,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void registerUser_adminIsNull() throws Exception {
+    void registerUser_adminIsTrue() throws Exception {
         SignUpRequest request = signUpRequest("Nome", "Sobrenome", "teste@gmail.com", "senha123", "Rex");
         stubRegisterUserPrereqs(request, "senha-criptografada");
 
@@ -253,7 +251,7 @@ class AuthControllerTest {
         verify(usersRepository).save(captor.capture());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNull(captor.getValue().getAdmin());
+        assertTrue(captor.getValue().isAdmin());
     }
 
     @Test
