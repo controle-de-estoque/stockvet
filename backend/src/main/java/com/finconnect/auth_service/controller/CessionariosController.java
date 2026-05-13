@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.finconnect.auth_service.dto.CessionarioResponse;
 import com.finconnect.auth_service.dto.CreateCessionarioRequest;
-import com.finconnect.auth_service.dto.LoteResponse;
 import com.finconnect.auth_service.service.CessionarioService;
-import com.finconnect.auth_service.service.LoteService;
 import jakarta.validation.Valid;
 
 @RestController

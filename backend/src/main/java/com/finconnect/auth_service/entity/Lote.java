@@ -1,9 +1,10 @@
 package com.finconnect.auth_service.entity;
 
 import java.time.LocalDate;
-import java.util.UUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,9 +28,11 @@ public class Lote {
     @NotNull
     private int quantidadeAtual;
 
-    @NotNull
-    private UUID estoque;
+    @ManyToOne
+    @JoinColumn(name = "estoque_id", nullable = false)
+    private Estoque estoque;
 
-    @NotNull
-    private UUID produto;
+    @ManyToOne
+    @JoinColumn(name = "produto_id", nullable = false)
+    private Produto produto;
 }
