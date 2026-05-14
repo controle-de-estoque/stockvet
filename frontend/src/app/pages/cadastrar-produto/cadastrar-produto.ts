@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './cadastrar-produto.css',
 })
 export class CadastrarProduto implements OnInit{
-  
+
   nome: string = '';
   categoriaId: string = '';
   unidadeId: string = '';
@@ -47,7 +47,9 @@ export class CadastrarProduto implements OnInit{
       return;
     }
 
-    if (!this.nome || !this.categoriaId || !this.unidadeId || !this.tipo || !this.quantidadeCritica) {
+    if(this.tipo == "patrimonio") this.quantidadeCritica = 0;
+
+    if (!this.nome || !this.categoriaId || !this.unidadeId || !this.tipo || this.quantidadeCritica === null) {
       window.alert('Preencha todos os campos obrigatórios.');
       return;
     }

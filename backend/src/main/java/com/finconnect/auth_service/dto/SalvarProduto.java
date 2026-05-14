@@ -23,7 +23,5 @@ public record SalvarProduto(
     @NotNull
     UUID estoque,
     
-    @NotNull
-    @Positive
     int quantidadeCritica
 ) {}

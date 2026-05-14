@@ -40,8 +40,6 @@ public class Produto {
     @NotNull
     private UUID estoque;
 
-    @NotNull
-    @Positive
     private int quantidadeCritica;
 
     @NotNull
