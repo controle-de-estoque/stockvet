@@ -1,157 +1,158 @@
 <div class="flex flex-col w-full md:max-w-[80%] mx-auto gap-8 p-4 md:p-0">
-	<app-navbar></app-navbar>
+  <app-navbar></app-navbar>
 
-	<div class="w-full bg-white rounded-lg shadow-sm p-6 sm:p-8 border border-gray-100">
-		<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-			<h2 class="text-xl font-bold text-gray-900">Gerar relatório</h2>
-			<button
-				type="button"
-				class="w-full sm:w-auto bg-[#4e43e7] hover:bg-indigo-700 text-white font-medium text-sm py-2.5 px-6 rounded transition-colors"
-			>
-				Baixar relatório
-			</button>
-		</div>
+  <div class="w-full bg-white rounded-lg shadow-sm p-6 sm:p-8 border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <h2 class="text-xl font-bold text-gray-900">Gerar relatório</h2>
+      <button
+        (click)="baixarRelatorio()"
+        type="button"
+        class="w-full sm:w-auto bg-[#4e43e7] hover:bg-indigo-700 text-white font-medium text-sm py-2.5 px-6 rounded transition-colors"
+      >
+        Baixar relatório
+      </button>
+    </div>
 
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-			<!-- Campo: Tipo de Relatório -->
-			<div>
-				<label for="tipo_relatorio" class="block text-sm font-semibold text-gray-900 mb-2">Tipo de relatorio</label>
-				<div class="relative">
-					<select
-						id="tipo_relatorio"
-						class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
-					>
-						<option value="" disabled selected>Selecione o tipo</option>
-						<option value="entrada">Consumo por período</option>
-						<option value="saida">Estoque atual</option>
-						<option value="geral">Histórico de movimentações</option>
-						<option value="vencimento">Produtos próximos ao vencimento</option>
-					</select>
-					<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
-						<svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-							<path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-						</svg>
-					</div>
-				</div>
-			</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div>
+        <label for="tipo_relatorio" class="block text-sm font-semibold text-gray-900 mb-2">Tipo de relatorio</label>
+        <div class="relative">
+          <select
+            id="tipo_relatorio"
+            [(ngModel)]="tipoRelatorio"
+            class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
+          >
+            <option value="" disabled selected>Selecione o tipo</option>
+            <option value="entrada">Consumo por período</option>
+            <option value="saida">Estoque atual</option>
+            <option value="geral">Histórico de movimentações</option>
+            <option value="vencimento">Produtos próximos ao vencimento</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+            <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+            </svg>
+          </div>
+        </div>
+      </div>
 
-			<!-- NOVO CAMPO: Formato do Arquivo -->
-			<div>
-				<label for="formato_arquivo" class="block text-sm font-semibold text-gray-900 mb-2">Formato do arquivo</label>
-				<div class="relative">
-					<select
-						id="formato_arquivo"
-						class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
-					>
-						<option value="" disabled selected>Selecione o formato</option>
-						<option value="xlsx">XLSX</option>
-						<option value="pdf">PDF</option>
-					</select>
-					<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
-						<svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-							<path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-						</svg>
-					</div>
-				</div>
-			</div>
+      <div>
+        <label for="formato_arquivo" class="block text-sm font-semibold text-gray-900 mb-2">Formato do arquivo</label>
+        <div class="relative">
+          <select
+            id="formato_arquivo"
+            [(ngModel)]="formatoArquivo"
+            class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
+          >
+            <option value="" disabled selected>Selecione o formato</option>
+            <option value="xlsx">XLSX</option>
+            <option value="pdf">PDF</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+            <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+            </svg>
+          </div>
+        </div>
+      </div>
 
-			<!-- Campo: Data Inicial -->
-			<div>
-				<label for="data_inicial" class="block text-sm font-semibold text-gray-900 mb-2">Data inicial</label>
-				<input
-					type="date"
-					id="data_inicial"
-					class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-				>
-			</div>
+      <div>
+        <label for="data_inicial" class="block text-sm font-semibold text-gray-900 mb-2">Data inicial</label>
+        <input
+          type="date"
+          id="data_inicial"
+          [(ngModel)]="dataInicial"
+          class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+        >
+      </div>
 
-			<!-- Campo: Data Final -->
-			<div>
-				<label for="data_final" class="block text-sm font-semibold text-gray-900 mb-2">Data final</label>
-				<input
-					type="date"
-					id="data_final"
-					class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-				>
-			</div>
-		</div>
+      <div>
+        <label for="data_final" class="block text-sm font-semibold text-gray-900 mb-2">Data final</label>
+        <input
+          type="date"
+          id="data_final"
+          [(ngModel)]="dataFinal"
+          class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+        >
+      </div>
+    </div>
 
-		<div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-6">
-				<div class="flex items-center justify-between">
-					<h3 class="text-base font-semibold text-gray-900">Entrada de insumos</h3>
-					<span class="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Ultimos 6 meses</span>
-				</div>
-				<div class="mt-4">
-					<svg viewBox="0 0 320 180" class="w-full h-56" aria-hidden="true">
-						<defs>
-							<linearGradient id="area-entrada" x1="0" x2="0" y1="0" y2="1">
-								<stop offset="0%" stop-color="rgba(78, 67, 231, 0.35)" />
-								<stop offset="100%" stop-color="rgba(78, 67, 231, 0.05)" />
-							</linearGradient>
-						</defs>
-						<g stroke="#e5e7eb" stroke-width="1">
-							<line x1="30" y1="20" x2="30" y2="150" />
-							<line x1="30" y1="150" x2="300" y2="150" />
-							<line x1="30" y1="115" x2="300" y2="115" />
-							<line x1="30" y1="80" x2="300" y2="80" />
-							<line x1="30" y1="45" x2="300" y2="45" />
-						</g>
-						<path d="M30 150 L30 120 L80 100 L130 110 L180 70 L230 60 L280 40 L280 150 Z" fill="url(#area-entrada)" />
-						<path d="M30 120 L80 100 L130 110 L180 70 L230 60 L280 40" fill="none" stroke="#4e43e7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-						<g fill="#4e43e7">
-							<circle cx="30" cy="120" r="4" />
-							<circle cx="80" cy="100" r="4" />
-							<circle cx="130" cy="110" r="4" />
-							<circle cx="180" cy="70" r="4" />
-							<circle cx="230" cy="60" r="4" />
-							<circle cx="280" cy="40" r="4" />
-						</g>
-					</svg>
-				</div>
-				<div class="mt-2 flex justify-between text-xs text-gray-500">
-					<span>Nov</span>
-					<span>Dez</span>
-					<span>Jan</span>
-					<span>Fev</span>
-					<span>Mar</span>
-					<span>Abr</span>
-				</div>
-			</div>
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-6">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-semibold text-gray-900">Entrada de insumos</h3>
+          <span class="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Ultimos 6 meses</span>
+        </div>
+        <div class="mt-4">
+          <svg viewBox="0 0 320 180" class="w-full h-56" aria-hidden="true">
+            <defs>
+              <linearGradient id="area-entrada" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="rgba(78, 67, 231, 0.35)" />
+                <stop offset="100%" stop-color="rgba(78, 67, 231, 0.05)" />
+              </linearGradient>
+            </defs>
+            <g stroke="#e5e7eb" stroke-width="1">
+              <line x1="30" y1="20" x2="30" y2="150" />
+              <line x1="30" y1="150" x2="300" y2="150" />
+              <line x1="30" y1="115" x2="300" y2="115" />
+              <line x1="30" y1="80" x2="300" y2="80" />
+              <line x1="30" y1="45" x2="300" y2="45" />
+            </g>
+            <path d="M30 150 L30 120 L80 100 L130 110 L180 70 L230 60 L280 40 L280 150 Z" fill="url(#area-entrada)" />
+            <path d="M30 120 L80 100 L130 110 L180 70 L230 60 L280 40" fill="none" stroke="#4e43e7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+            <g fill="#4e43e7">
+              <circle cx="30" cy="120" r="4" />
+              <circle cx="80" cy="100" r="4" />
+              <circle cx="130" cy="110" r="4" />
+              <circle cx="180" cy="70" r="4" />
+              <circle cx="230" cy="60" r="4" />
+              <circle cx="280" cy="40" r="4" />
+            </g>
+          </svg>
+        </div>
+        <div class="mt-2 flex justify-between text-xs text-gray-500">
+          <span>Nov</span>
+          <span>Dez</span>
+          <span>Jan</span>
+          <span>Fev</span>
+          <span>Mar</span>
+          <span>Abr</span>
+        </div>
+      </div>
 
-			<div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-6">
-				<div class="flex items-center justify-between">
-					<h3 class="text-base font-semibold text-gray-900">Saida de insumos</h3>
-					<span class="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Ultimos 6 meses</span>
-				</div>
-				<div class="mt-4">
-					<svg viewBox="0 0 320 180" class="w-full h-56" aria-hidden="true">
-						<g stroke="#e5e7eb" stroke-width="1">
-							<line x1="30" y1="20" x2="30" y2="150" />
-							<line x1="30" y1="150" x2="300" y2="150" />
-							<line x1="30" y1="115" x2="300" y2="115" />
-							<line x1="30" y1="80" x2="300" y2="80" />
-							<line x1="30" y1="45" x2="300" y2="45" />
-						</g>
-						<g fill="#4e43e7">
-							<rect x="45" y="90" width="28" height="60" rx="6" />
-							<rect x="90" y="70" width="28" height="80" rx="6" />
-							<rect x="135" y="105" width="28" height="45" rx="6" />
-							<rect x="180" y="55" width="28" height="95" rx="6" />
-							<rect x="225" y="75" width="28" height="75" rx="6" />
-							<rect x="270" y="95" width="28" height="55" rx="6" />
-						</g>
-					</svg>
-				</div>
-				<div class="mt-2 flex justify-between text-xs text-gray-500">
-					<span>Nov</span>
-					<span>Dez</span>
-					<span>Jan</span>
-					<span>Fev</span>
-					<span>Mar</span>
-					<span>Abr</span>
-				</div>
-			</div>
-		</div>
-	</div>
+      <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-6">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-semibold text-gray-900">Saida de insumos</h3>
+          <span class="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Ultimos 6 meses</span>
+        </div>
+        <div class="mt-4">
+          <svg viewBox="0 0 320 180" class="w-full h-56" aria-hidden="true">
+            <g stroke="#e5e7eb" stroke-width="1">
+              <line x1="30" y1="20" x2="30" y2="150" />
+              <line x1="30" y1="150" x2="300" y2="150" />
+              <line x1="30" y1="115" x2="300" y2="115" />
+              <line x1="30" y1="80" x2="300" y2="80" />
+              <line x1="30" y1="45" x2="300" y2="45" />
+            </g>
+            <g fill="#4e43e7">
+              <rect x="45" y="90" width="28" height="60" rx="6" />
+              <rect x="90" y="70" width="28" height="80" rx="6" />
+              <rect x="135" y="105" width="28" height="45" rx="6" />
+              <rect x="180" y="55" width="28" height="95" rx="6" />
+              <rect x="225" y="75" width="28" height="75" rx="6" />
+              <rect x="270" y="95" width="28" height="55" rx="6" />
+            </g>
+          </svg>
+        </div>
+        <div class="mt-2 flex justify-between text-xs text-gray-500">
+          <span>Nov</span>
+          <span>Dez</span>
+          <span>Jan</span>
+          <span>Fev</span>
+          <span>Mar</span>
+          <span>Abr</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

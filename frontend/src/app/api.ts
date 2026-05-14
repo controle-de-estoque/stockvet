@@ -83,4 +83,12 @@ export class Api {
     return this.http.get(`${this.baseUrl}/auth/users/uuid/` + localStorage.getItem('email')!, { responseType: 'text' });
   }
 
+  baixarRelatorioEstoqueAtualExcel(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/relatorios/produtos-ativos`, { responseType: 'blob' });
+  }
+
+  baixarRelatorioEstoqueAtualPdf(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/relatorios/produtos-ativos/pdf`, { responseType: 'blob' });
+  }
+
 }
