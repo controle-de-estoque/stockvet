@@ -17,6 +17,7 @@ export class CadastrarProduto implements OnInit{
   categoriaId: string = '';
   unidadeId: string = '';
   tipo: string = '';
+  quantidadeCritica: number | null = null;
 
   categorias = signal<Categoria[]>([]);
   unidades = signal<Unidade[]>([]);
@@ -46,7 +47,7 @@ export class CadastrarProduto implements OnInit{
       return;
     }
 
-    if (!this.nome || !this.categoriaId || !this.unidadeId || !this.tipo) {
+    if (!this.nome || !this.categoriaId || !this.unidadeId || !this.tipo || !this.quantidadeCritica) {
       window.alert('Preencha todos os campos obrigatórios.');
       return;
     }
@@ -56,7 +57,8 @@ export class CadastrarProduto implements OnInit{
       categoria: this.categoriaId,
       unidade: this.unidadeId,
       tipo: this.tipo.toUpperCase(), // O backend espera o Enum (CONSUMO ou PATRIMONIO)
-      estoque: estoqueId
+      estoque: estoqueId,
+      quantidadeCritica: this.quantidadeCritica,
     };
 
     this.api.cadastrarProduto(payload).subscribe({

@@ -4,24 +4,15 @@
 	<div class="w-full bg-white rounded-lg shadow-sm p-6 sm:p-10 border border-gray-100">
 		<h2 class="text-2xl font-bold text-gray-900 mb-8">Cadastrar cessionario</h2>
 
-		<form class="space-y-6">
+		<form class="space-y-6" (ngSubmit)="cadastrarCessionario()">
 			<div>
 				<label for="nome" class="block text-sm font-semibold text-gray-900 mb-2">Nome</label>
 				<input
 					type="text"
 					id="nome"
+					name="nome"
+					[(ngModel)]="nome"
 					placeholder="Digite aqui o nome do usuario"
-					class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-					required
-				>
-			</div>
-
-			<div>
-				<label for="sobrenome" class="block text-sm font-semibold text-gray-900 mb-2">Sobrenome</label>
-				<input
-					type="text"
-					id="sobrenome"
-					placeholder="Digite aqui o sobrenome do usuario"
 					class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
 					required
 				>
@@ -32,6 +23,8 @@
 				<input
 					type="email"
 					id="email"
+					name="email"
+					[(ngModel)]="email"
 					placeholder="Digite aqui o email do usuario"
 					class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
 					required

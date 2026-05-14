@@ -40,11 +40,7 @@ export class Products implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.api.buscarProdutos().subscribe({
       next: (produtos: Produto[]) => {
-        const produtosComQuantidade = produtos.map((produto) => ({
-          ...produto,
-          quantidade: this.gerarQuantidadeMock(produto.nome),
-        }));
-        this.produtos.set(produtosComQuantidade);
+        this.produtos.set(produtos);
         this.executarFiltro(this.nomeProduto);
       },
       error: (err) => window.alert(err),
@@ -124,14 +120,6 @@ export class Products implements OnDestroy, OnInit {
 
   proximaPagina() {
     this.irParaPagina(this.paginaAtual + 1);
-  }
-
-  private gerarQuantidadeMock(nome: string): number {
-    let soma = 0;
-    for (let i = 0; i < nome.length; i += 1) {
-      soma = (soma + nome.charCodeAt(i)) % 50;
-    }
-    return soma + 1;
   }
 
   private aplicarPaginacao(produtos: Produto[]) {

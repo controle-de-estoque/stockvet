@@ -26,7 +26,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
             c.nome, 
             cast(p.tipo as string), 
             u.nome, 
-            u.consumoMinimo, 
+            p.quantidadeCritica, 
             0,
             p.ativo
         ) 
@@ -44,7 +44,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
             c.nome, 
             cast(p.tipo as string), 
             u.nome, 
-            u.consumoMinimo, 
+            p.quantidadeCritica, 
             0,
             p.ativo
         ) 

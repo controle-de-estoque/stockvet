@@ -28,23 +28,43 @@ export class Api {
   }
 
   cadastrarCategoria(dados: {nome: string, estoque: string}): Observable<string> {
-    return this.http.post(`${this.baseUrl}/produtos/categoria`, dados, { responseType: 'text' });
+    return this.http.post(`${this.baseUrl}/categorias`, dados, { responseType: 'text' });
+  }
+
+  cadastrarCessionario(dados: {nome: string, email: string, estoque: string}): Observable<any> {
+    return this.http.post(`${this.baseUrl}/cessionarios`, dados, { responseType: 'text' });
+  }
+
+  cadastrarUsuario(dados: {firstName: string, lastName: string, email: string, password: string, firstPetName: string, estoque: string}): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/register-simple-user`, dados, { responseType: 'text' });
   }
 
   cadastrarUnidade(dados: {nome: string, consumoMinimo: number, estoque: string}): Observable<any> {
-    return this.http.post(`${this.baseUrl}/produtos/unidade`, dados, { responseType: 'text' });
+    return this.http.post(`${this.baseUrl}/unidades`, dados, { responseType: 'text' });
   }
 
   buscarCategoriasPorEstoque(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/produtos/categoria/${localStorage.getItem('estoque')}`);
+    return this.http.get(`${this.baseUrl}/categorias/${localStorage.getItem('estoque')}`);
   }
 
   buscarUnidadesPorEstoque(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/produtos/unidade/${localStorage.getItem('estoque')}`);
+    return this.http.get(`${this.baseUrl}/unidades/${localStorage.getItem('estoque')}`);
   }
 
-  cadastrarProduto(dados: {nome: string, categoria: string, tipo: string, unidade: string, estoque: string}) {
+  buscarCessionariosPorEstoque(estoque: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/cessionarios/${estoque}`);
+  }
+
+  buscarUsuariosPorEstoque(estoque: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/auth/users/${estoque}`);
+  }
+
+  cadastrarProduto(dados: {nome: string, categoria: string, tipo: string, unidade: string, estoque: string, quantidadeCritica: number}) {
     return this.http.post(`${this.baseUrl}/produtos`, dados, {responseType: 'text'});
+  }
+
+  buscarMovimentacoes(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/movimentacoes/${localStorage.getItem('estoque')}`);
   }
 
   desativarProduto(id: string) {

@@ -1,9 +1,8 @@
 package com.finconnect.auth_service.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import com.finconnect.auth_service.exception_handler.exceptions.InsufficientProd
 import com.finconnect.auth_service.exception_handler.exceptions.ResourceNotFoundException;
 import com.finconnect.auth_service.dto.CreateMovimentacaoEntradaRequest;
 import com.finconnect.auth_service.dto.CreateMovimentacaoSaidaRequest;
+import com.finconnect.auth_service.dto.MovimentacaoResponse;
 import com.finconnect.auth_service.repository.CessionarioRepository;
 import com.finconnect.auth_service.repository.EstoqueRepository;
 import com.finconnect.auth_service.repository.MovimentacaoRepository;
@@ -161,4 +161,25 @@ public class MovimentacaoService {
         // 5. Salva a movimentação (Persiste cabeçalho e itens via Cascade)
         repository.save(mov);
     }
+
+        public List<MovimentacaoResponse> findAllByEstoque(UUID estoqueId) {
+                logger.info("Buscando movimentacoes do estoque: {}", estoqueId);
+
+                return this.repository.findAllByEstoqueIdOrderByDataHoraMovimentacaoDesc(estoqueId).stream()
+                        .map(this::toResponse)
+                        .toList();
+        }
+
+        private MovimentacaoResponse toResponse(Movimentacao mov) {
+                String nomeUsuario = mov.getMovimentadorPor().getFirstName() + " " + mov.getMovimentadorPor().getLastName();
+                String nomeCessionario = mov.getCessionario() != null ? mov.getCessionario().getNome() : null;
+
+                return new MovimentacaoResponse(
+                        mov.getId(),
+                        mov.getTipo().name(),
+                        nomeUsuario,
+                        nomeCessionario,
+                        mov.getDataHoraMovimentacao()
+                );
+        }
 }

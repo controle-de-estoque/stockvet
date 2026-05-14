@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +16,21 @@ export class CadastrarUnidade {
   consumoMinimo: number | null = null;
 
   constructor(private api: Api, private router: Router) {}
+
+  private extractErrorMessage(error: HttpErrorResponse): string {
+    const body = error.error;
+
+    if (typeof body === 'string') {
+      try {
+        const parsed = JSON.parse(body);
+        return parsed?.message ?? body;
+      } catch {
+        return body;
+      }
+    }
+
+    return body?.message ?? 'Falha ao criar unidade';
+  }
 
   cadastrar() {
     const estoqueId = localStorage.getItem('estoque');
@@ -37,10 +53,13 @@ export class CadastrarUnidade {
     this.api.cadastrarUnidade(payload).subscribe({
       next: () => {
         window.alert('Unidade cadastrada com sucesso!');
+        this.nome = '';
+        this.consumoMinimo = null;
+        this.router.navigate(['/admin']);
       },
-      error: (err) => {
-        console.error(err);
-        window.alert('Erro ao cadastrar unidade.');
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        window.alert(this.extractErrorMessage(error));
       }
     });
   }

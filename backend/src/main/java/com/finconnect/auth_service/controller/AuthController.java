@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import com.finconnect.auth_service.dto.CreateSimpleUserRequest;
 import com.finconnect.auth_service.dto.ResetPasswordRequest;
 import com.finconnect.auth_service.dto.SalvarEstoque;
 import com.finconnect.auth_service.dto.SignInRequest;
 import com.finconnect.auth_service.dto.SignInResponse;
 import com.finconnect.auth_service.dto.SignUpRequest;
+import com.finconnect.auth_service.dto.UserResponse;
 import com.finconnect.auth_service.entity.Users;
 import com.finconnect.auth_service.exception_handler.exceptions.PetNameIsIncorrectException;
 import com.finconnect.auth_service.exception_handler.exceptions.UserAlredyExistsException;
@@ -25,6 +28,8 @@ import com.finconnect.auth_service.repository.UsersRepository;
 import com.finconnect.auth_service.service.ProductsService;
 import com.finconnect.auth_service.util.JwtUtil;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -109,5 +114,19 @@ public class AuthController {
         usersRepository.save(newUser);
 
         return ResponseEntity.ok("Usuário criado com sucesso");
+    }
+
+    @GetMapping("/users/{estoque}")
+    public ResponseEntity<List<UserResponse>> findUsersByEstoque(@PathVariable UUID estoque) {
+        return ResponseEntity.ok(
+            usersRepository.findAll().stream()
+                .filter(user -> estoque.equals(user.getEstoque()))
+                .map(user -> new UserResponse(
+                    user.getId(),
+                    user.getFirstName() + " " + user.getLastName(),
+                    user.getEmail()
+                ))
+                .toList()
+        );
     }
 }
