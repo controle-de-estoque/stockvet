@@ -55,7 +55,7 @@ export class CadastrarUnidade {
         window.alert('Unidade cadastrada com sucesso!');
         this.nome = '';
         this.consumoMinimo = null;
-        this.router.navigate(['/admin']);
+        this.router.navigate(['/cadastrar-produtos']);
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);

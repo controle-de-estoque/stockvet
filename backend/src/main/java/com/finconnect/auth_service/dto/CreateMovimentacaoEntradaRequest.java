@@ -33,7 +33,6 @@ public record CreateMovimentacaoEntradaRequest(
     @NotNull
     String loteId,
 
-    @NotNull
     LocalDate dataValidade
 
 ) {}

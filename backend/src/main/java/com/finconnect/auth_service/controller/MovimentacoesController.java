@@ -24,7 +24,7 @@ public class MovimentacoesController {
     private MovimentacaoService movimentacaoService;
 
     @PostMapping("/entrada")
-    public ResponseEntity<Void> registrarEntrada(@Valid @RequestBody CreateMovimentacaoEntradaRequest request) {
+    public ResponseEntity<Void> registrarEntrada(@Valid @RequestBody List<CreateMovimentacaoEntradaRequest> request) {
         movimentacaoService.registrarEntrada(request);
         return ResponseEntity.ok().build();
     }
@@ -35,7 +35,7 @@ public class MovimentacoesController {
     }
 
     @PostMapping("/saida")
-    public ResponseEntity<Void> registrarSaida(@Valid @RequestBody CreateMovimentacaoSaidaRequest request) {
+    public ResponseEntity<Void> registrarSaida(@Valid @RequestBody List<CreateMovimentacaoSaidaRequest> request) {
         movimentacaoService.registrarSaida(request);
         return ResponseEntity.ok().build();
     }

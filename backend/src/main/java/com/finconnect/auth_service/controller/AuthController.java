@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -127,6 +128,13 @@ public class AuthController {
                     user.getEmail()
                 ))
                 .toList()
+        );
+    }
+
+    @GetMapping("/users/uuid/{email}")
+    public ResponseEntity<UUID> findUsersByEstoque(@PathVariable String email) {
+        return ResponseEntity.ok(
+            usersRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado para o email: " + email)).getId()
         );
     }
 }

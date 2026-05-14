@@ -24,6 +24,7 @@ public class CessionarioService {
 
         return this.repository.findAllByEstoque(estoque).stream()
             .map(c -> new CessionarioResponse(
+                c.getId(),
                 c.getNome(),
                 c.getEmail()
             )).toList();
@@ -40,6 +41,7 @@ public class CessionarioService {
 
         var salvo = this.repository.save(cessionario);
         return new CessionarioResponse(
+            salvo.getId(),
             salvo.getNome(),
             salvo.getEmail()
         );

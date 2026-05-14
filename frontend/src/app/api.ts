@@ -70,4 +70,17 @@ export class Api {
   desativarProduto(id: string) {
     return this.http.patch(`${this.baseUrl}/produtos/desativar/${id}`, null, { responseType: 'text' });
   }
+
+  cadastrarMovimentacoesEntrada(dados: Array<{produto: string, estoque: string, movimentadoPor: string, quantidade: string, dataHoraMovimentacao: string, tipo: string, loteId: string, dataValidade: string}>) {
+    return this.http.post(`${this.baseUrl}/movimentacoes/entrada`, dados);
+  }
+
+  cadastrarMovimentacoesSaida(dados: Array<{produto: string, estoque: string, movimentadoPor: string, quantidade: string, dataHoraMovimentacao: string, tipo: string, loteId: string, dataValidade: string}>) {
+    return this.http.post(`${this.baseUrl}/movimentacoes/saida`, dados);
+  }
+
+  getIdFromUserEmail() {
+    return this.http.get(`${this.baseUrl}/auth/users/uuid/` + localStorage.getItem('email')!, { responseType: 'text' });
+  }
+
 }

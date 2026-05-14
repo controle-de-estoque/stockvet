@@ -19,7 +19,6 @@ public class Lote {
     @Id
     private String identificador; //deve ser preenchido pelo usuário
 
-    @NotNull
     private LocalDate dataValidade;
 
     @NotNull
