@@ -17,7 +17,7 @@ import com.finconnect.auth_service.dto.SalvarCategoria;
 import com.finconnect.auth_service.service.CategoriaService;
 
 @RestController
-@RequestMapping("/api/produtos/categoria")
+@RequestMapping("/api/categorias")
 public class CategoriasController {
 
     @Autowired

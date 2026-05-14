@@ -16,7 +16,7 @@ import com.finconnect.auth_service.dto.UnidadeResponse;
 import com.finconnect.auth_service.service.UnidadeService;
 
 @RestController
-@RequestMapping("/api/produtos/unidade")
+@RequestMapping("/api/unidades")
 public class UnidadesController {
 
     @Autowired

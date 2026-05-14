@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-
 import com.finconnect.auth_service.dto.ProdutoResponse;
 import com.finconnect.auth_service.dto.SalvarEstoque;
 import com.finconnect.auth_service.dto.SalvarProduto;
@@ -42,6 +41,7 @@ public class ProductsService {
         produto.setTipo(request.tipo());
         produto.setUnidade(request.unidade());
         produto.setEstoque(request.estoque());
+        produto.setQuantidadeCritica(request.quantidadeCritica());
         produto.setAtivo(true);
 
         try {

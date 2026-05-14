@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finconnect.auth_service.dto.ProdutoResponse;
 import com.finconnect.auth_service.dto.SalvarProduto;
 import com.finconnect.auth_service.service.ProductsService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class ProductsController {
     private ProductsService productsService;
     
     @PostMapping()
-    public ResponseEntity<String> salvarProduto(@RequestBody SalvarProduto request) {
+    public ResponseEntity<String> salvarProduto(@Valid @RequestBody SalvarProduto request) {
         return ResponseEntity.ok().body(this.productsService.salvarProduto(request));
     }
 

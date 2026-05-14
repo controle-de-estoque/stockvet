@@ -13,7 +13,7 @@ import com.finconnect.auth_service.entity.Lote;
 @Repository
 public interface LoteRepository extends JpaRepository<Lote, String> {
 
-    Optional<Lote> findByIdentificadorAndEstoque(String identificador, UUID estoque);
+    Optional<Lote> findByIdentificadorAndEstoqueId(String identificador, UUID estoque);
 
     List<Lote> findAllByEstoqueId(UUID estoqueId);
 

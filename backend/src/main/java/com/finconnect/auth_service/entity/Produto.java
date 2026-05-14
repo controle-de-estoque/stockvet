@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Entity
@@ -38,6 +39,10 @@ public class Produto {
 
     @NotNull
     private UUID estoque;
+
+    @NotNull
+    @Positive
+    private int quantidadeCritica;
 
     @NotNull
     @Column(nullable = false, columnDefinition = "boolean default true")

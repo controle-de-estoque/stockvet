@@ -77,7 +77,7 @@ public class LoteService {
     public Lote findLoteByIdAndEstoque(String id, UUID estoque) {
         logger.info("Buscando lote com id: " + id);
 
-        return this.repository.findByIdentificadorAndEstoque(id, estoque).orElseThrow(() -> new LoteNotFoundException("Lote não encontrado no estoque. Lote-id: " + id));
+        return this.repository.findByIdentificadorAndEstoqueId(id, estoque).orElseThrow(() -> new LoteNotFoundException("Lote não encontrado no estoque. Lote-id: " + id));
     }
 
     public List<Lote> findLotesDisponiveisFEFO(UUID produto, UUID estoque) {
@@ -96,9 +96,11 @@ public class LoteService {
             throw new IllegalArgumentException("Quantidade do lote não pode ser negativa.");
         }
 
-        int atualizados = this.repository.updateQuantidadeAtual(loteId, novaQuantidade);
-        if (atualizados == 0) {
-            throw new LoteNotFoundException("Lote não encontrado no estoque. Lote-id: " + loteId);
-        }
+        Lote lote = this.repository.findById(loteId)
+            .orElseThrow(() -> new LoteNotFoundException("Lote não encontrado no estoque. Lote-id: " + loteId));
+
+        lote.setQuantidadeAtual(novaQuantidade);
+
+        this.repository.save(lote);
     }
 }
