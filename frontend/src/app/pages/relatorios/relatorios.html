@@ -3,16 +3,17 @@
 
 	<div class="w-full bg-white rounded-lg shadow-sm p-6 sm:p-8 border border-gray-100">
 		<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-			<h2 class="text-xl font-bold text-gray-900">Gerar relatorio</h2>
+			<h2 class="text-xl font-bold text-gray-900">Gerar relatório</h2>
 			<button
 				type="button"
 				class="w-full sm:w-auto bg-[#4e43e7] hover:bg-indigo-700 text-white font-medium text-sm py-2.5 px-6 rounded transition-colors"
 			>
-				Baixar relatorio
+				Baixar relatório
 			</button>
 		</div>
 
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+			<!-- Campo: Tipo de Relatório -->
 			<div>
 				<label for="tipo_relatorio" class="block text-sm font-semibold text-gray-900 mb-2">Tipo de relatorio</label>
 				<div class="relative">
@@ -20,10 +21,11 @@
 						id="tipo_relatorio"
 						class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
 					>
-						<option value="" disabled selected>Selecione o tipo de relatorio</option>
-						<option value="entrada">Entrada de insumos</option>
-						<option value="saida">Saida de insumos</option>
-						<option value="geral">Movimentacoes gerais</option>
+						<option value="" disabled selected>Selecione o tipo</option>
+						<option value="entrada">Consumo por período</option>
+						<option value="saida">Estoque atual</option>
+						<option value="geral">Histórico de movimentações</option>
+						<option value="vencimento">Produtos próximos ao vencimento</option>
 					</select>
 					<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
 						<svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -33,6 +35,27 @@
 				</div>
 			</div>
 
+			<!-- NOVO CAMPO: Formato do Arquivo -->
+			<div>
+				<label for="formato_arquivo" class="block text-sm font-semibold text-gray-900 mb-2">Formato do arquivo</label>
+				<div class="relative">
+					<select
+						id="formato_arquivo"
+						class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
+					>
+						<option value="" disabled selected>Selecione o formato</option>
+						<option value="xlsx">XLSX</option>
+						<option value="pdf">PDF</option>
+					</select>
+					<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+						<svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+							<path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+						</svg>
+					</div>
+				</div>
+			</div>
+
+			<!-- Campo: Data Inicial -->
 			<div>
 				<label for="data_inicial" class="block text-sm font-semibold text-gray-900 mb-2">Data inicial</label>
 				<input
@@ -42,6 +65,7 @@
 				>
 			</div>
 
+			<!-- Campo: Data Final -->
 			<div>
 				<label for="data_final" class="block text-sm font-semibold text-gray-900 mb-2">Data final</label>
 				<input

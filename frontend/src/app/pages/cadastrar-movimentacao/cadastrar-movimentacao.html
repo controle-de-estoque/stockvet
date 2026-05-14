@@ -13,7 +13,7 @@
 					[class.bg-indigo-600]="isStepInfo()"
 					[class.bg-gray-300]="!isStepInfo()"
 				></span>
-				<span>1. Informacoes</span>
+				<span>1. Informações</span>
 			</div>
 			<div class="flex-1 h-px bg-gray-200"></div>
 			<div
@@ -30,7 +30,7 @@
 			</div>
 		</div>
 
-		<h2 class="text-2xl font-bold text-gray-900 mb-8">Registrar movimentacao</h2>
+		<h2 class="text-2xl font-bold text-gray-900 mb-8">Registrar movimentação</h2>
 
 		@if (currentStep === 'info') {
 			<div class="space-y-6">
@@ -45,7 +45,7 @@
 							class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
 							required
 						>
-							<option value="" disabled>Selecione o tipo da movimentacao ...</option>
+							<option value="" disabled>Selecione o tipo da movimentação ...</option>
 							<option value="entrada">Entrada</option>
 							<option value="saida">Saida</option>
 						</select>
@@ -58,7 +58,7 @@
 				</div>
 
 				<div>
-					<label for="data_movimentacao" class="block text-sm font-semibold text-gray-900 mb-2">Data da movimentacao</label>
+					<label for="data_movimentacao" class="block text-sm font-semibold text-gray-900 mb-2">Data da movimentação</label>
 					<input
 						type="date"
 						id="data_movimentacao"
@@ -70,7 +70,7 @@
 				</div>
 
 				<div>
-					<label for="horario_movimentacao" class="block text-sm font-semibold text-gray-900 mb-2">Horario da movimentacao</label>
+					<label for="horario_movimentacao" class="block text-sm font-semibold text-gray-900 mb-2">Horario da movimentação</label>
 					<input
 						type="time"
 						id="horario_movimentacao"
@@ -88,7 +88,7 @@
 							type="button"
 							class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors hover:cursor-pointer"
 						>
-							+ Adicionar cessionario
+							+ Adicionar cessionário
 						</button>
 					</div>
 					<div class="relative">
@@ -127,7 +127,7 @@
 						[class.bg-indigo-300]="!podeIrParaProdutos()"
 						[class.cursor-not-allowed]="!podeIrParaProdutos()"
 					>
-						Adicionar produtos a movimentacao
+						Adicionar produtos a movimentação
 					</button>
 				</div>
 			</div>
@@ -202,7 +202,7 @@
 								@if (mostrarLoteColuna()) {
 									<th class="py-2.5 px-4 font-medium text-center">Lote</th>
 								}
-								<th class="py-2.5 px-4 font-medium text-center">Acoes</th>
+								<th class="py-2.5 px-4 font-medium text-center">Ações</th>
 							</tr>
 						</thead>
 						<tbody class="text-sm text-gray-900">
@@ -294,7 +294,7 @@
 						[class.bg-indigo-300]="!podeRegistrar()"
 						[class.cursor-not-allowed]="!podeRegistrar()"
 					>
-						Registrar movimentacao
+						Registrar movimentação
 					</button>
 				</div>
 			</div>
