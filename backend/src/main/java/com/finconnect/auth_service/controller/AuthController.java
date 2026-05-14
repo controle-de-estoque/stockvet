@@ -120,7 +120,7 @@ public class AuthController {
     public ResponseEntity<List<UserResponse>> findUsersByEstoque(@PathVariable UUID estoque) {
         return ResponseEntity.ok(
             usersRepository.findAll().stream()
-                .filter(user -> estoque.equals(user.getEstoque()))
+                .filter(user -> estoque.equals(user.getEstoque()) && user.isAdmin() == false)
                 .map(user -> new UserResponse(
                     user.getId(),
                     user.getFirstName() + " " + user.getLastName(),
