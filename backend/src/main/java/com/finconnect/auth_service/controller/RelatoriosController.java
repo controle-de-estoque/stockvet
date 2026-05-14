@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.finconnect.auth_service.dto.ProdutoAtivoRelatorio;
 import com.finconnect.auth_service.service.RelatoriosService;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/relatorios")
@@ -35,6 +36,11 @@ public class RelatoriosController {
                 .headers(headers)
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(new InputStreamResource(stream));
+    }
+
+    @GetMapping("/produtos-ativos/pdf")
+    public void downloadPdf(HttpServletResponse response) throws IOException {
+        relatoriosService.gerarRelatorioPdf(response, criar30ProdutosMock());
     }
 
     public List<ProdutoAtivoRelatorio> criar30ProdutosMock() {
