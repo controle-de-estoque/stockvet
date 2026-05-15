@@ -24,10 +24,10 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
             p.id,
             p.nome, 
             c.nome, 
-            cast(p.tipo as string), 
+            CAST(p.tipo AS string), 
             u.nome, 
             p.quantidadeCritica, 
-            0,
+            COALESCE(CAST((SELECT SUM(l.quantidadeAtual) FROM Lote l WHERE l.produto = p) AS integer), 0),
             p.ativo
         ) 
         FROM Produto p 
