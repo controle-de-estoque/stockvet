@@ -83,12 +83,28 @@ export class Api {
     return this.http.get(`${this.baseUrl}/auth/users/uuid/` + localStorage.getItem('email')!, { responseType: 'text' });
   }
 
-  baixarRelatorioEstoqueAtualExcel(): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/relatorios/produtos-ativos`, { responseType: 'blob' });
+  baixarRelatorioProdutosAtivosExcel(payload: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/relatorios/produtos-ativos/excel`, payload, { responseType: 'blob' });
   }
 
-  baixarRelatorioEstoqueAtualPdf(): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/relatorios/produtos-ativos/pdf`, { responseType: 'blob' });
+  baixarRelatorioProdutosAtivosPdf(payload: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/relatorios/produtos-ativos/pdf`, payload, { responseType: 'blob' });
+  }
+
+  baixarRelatorioMovimentacoesPdf(payload: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/relatorios/historico-movimentacoes/pdf`, payload, { responseType: 'blob' });
+  }
+
+  baixarRelatorioMovimentacoesExcel(payload: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/relatorios/historico-movimentacoes/excel`, payload, { responseType: 'blob' });
+  }
+
+  baixarRelatorioSaidasPdf(payload: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/relatorios/historico-saida/pdf`, payload, { responseType: 'blob' });
+  }
+
+  baixarRelatorioSaidasExcel(payload: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/relatorios/historico-saida/excel`, payload, { responseType: 'blob' });
   }
 
 }

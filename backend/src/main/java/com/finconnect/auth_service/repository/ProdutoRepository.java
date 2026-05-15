@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import com.finconnect.auth_service.dto.ProdutoAtivoRelatorio;
 import com.finconnect.auth_service.dto.ProdutoResponse;
 import com.finconnect.auth_service.entity.Produto;
 
@@ -57,4 +58,20 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
         @Param("estoqueId") UUID estoqueId, 
         @Param("nome") String nome
     );
+
+    @Query("SELECT new com.finconnect.auth_service.dto.ProdutoAtivoRelatorio(" +
+       "  p.nome, " +
+       "  c.nome, " +
+       "  CAST(COALESCE(SUM(l.quantidadeAtual), 0) AS int), " + // Garante 0 se não houver lote
+       "  p.quantidadeCritica, " +
+       "  u.nome" +
+       ") " +
+       "FROM Produto p " + // Começa por Produto para não perder registros
+       "LEFT JOIN Lote l ON l.produto.id = p.id " + // LEFT JOIN permite produtos sem lotes
+       "JOIN Categoria c ON c.id = p.categoria " +
+       "JOIN Unidade u ON u.id = p.unidade " +
+       "WHERE p.estoque = :estoqueId " +
+       "AND p.ativo = true " +
+       "GROUP BY p.id, p.nome, c.nome, p.quantidadeCritica, u.nome") // Agrupado por p.id para segurança
+    List<ProdutoAtivoRelatorio> relatorioProdutosAtivos(@Param("estoqueId") UUID estoqueId);
 }
