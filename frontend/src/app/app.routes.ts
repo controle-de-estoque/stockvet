@@ -12,6 +12,7 @@ import { Admin } from './pages/admin/admin';
 import { CadastrarUsuario } from './pages/cadastrar-usuario/cadastrar-usuario';
 import { CadastrarCessionario } from './pages/cadastrar-cessionario/cadastrar-cessionario';
 import { Relatorios } from './pages/relatorios/relatorios';
+import { NotFound } from './pages/not-found/not-found';
 
 export const routes: Routes = [
   {
@@ -67,7 +68,12 @@ export const routes: Routes = [
     component: CadastrarCategoria
   },
   {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
     path: '**',
-    component: Login
+    component: NotFound
   }
 ];
