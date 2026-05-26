@@ -16,6 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: googleapis/release-please-action@v4.1.1
+      - uses: googleapis/release-please-action@v3
         with:
           release-type: simple
