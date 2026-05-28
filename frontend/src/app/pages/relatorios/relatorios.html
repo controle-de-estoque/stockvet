@@ -20,6 +20,7 @@
           <select
             id="tipo_relatorio"
             [(ngModel)]="tipoRelatorio"
+            (ngModelChange)="onRelatorioFiltersChange()"
             class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white transition-colors cursor-pointer"
           >
             <option value="" disabled selected>Selecione o tipo</option>
@@ -62,16 +63,18 @@
           type="date"
           id="data_inicial"
           [(ngModel)]="dataInicial"
+          (ngModelChange)="onRelatorioFiltersChange()"
           class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
         >
       </div>
-
+      
       <div>
         <label for="data_final" class="block text-sm font-semibold text-gray-900 mb-2">Data final</label>
         <input
           type="date"
           id="data_final"
           [(ngModel)]="dataFinal"
+          (ngModelChange)="onRelatorioFiltersChange()"
           class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
         >
       </div>
@@ -81,78 +84,28 @@
       <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-6">
         <div class="flex items-center justify-between">
           <h3 class="text-base font-semibold text-gray-900">Entrada de insumos</h3>
-          <span class="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Ultimos 6 meses</span>
+          <span class="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Últimos meses</span>
         </div>
-        <div class="mt-4">
-          <svg viewBox="0 0 320 180" class="w-full h-56" aria-hidden="true">
-            <defs>
-              <linearGradient id="area-entrada" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stop-color="rgba(78, 67, 231, 0.35)" />
-                <stop offset="100%" stop-color="rgba(78, 67, 231, 0.05)" />
-              </linearGradient>
-            </defs>
-            <g stroke="#e5e7eb" stroke-width="1">
-              <line x1="30" y1="20" x2="30" y2="150" />
-              <line x1="30" y1="150" x2="300" y2="150" />
-              <line x1="30" y1="115" x2="300" y2="115" />
-              <line x1="30" y1="80" x2="300" y2="80" />
-              <line x1="30" y1="45" x2="300" y2="45" />
-            </g>
-            <path d="M30 150 L30 120 L80 100 L130 110 L180 70 L230 60 L280 40 L280 150 Z" fill="url(#area-entrada)" />
-            <path d="M30 120 L80 100 L130 110 L180 70 L230 60 L280 40" fill="none" stroke="#4e43e7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-            <g fill="#4e43e7">
-              <circle cx="30" cy="120" r="4" />
-              <circle cx="80" cy="100" r="4" />
-              <circle cx="130" cy="110" r="4" />
-              <circle cx="180" cy="70" r="4" />
-              <circle cx="230" cy="60" r="4" />
-              <circle cx="280" cy="40" r="4" />
-            </g>
-          </svg>
-        </div>
-        <div class="mt-2 flex justify-between text-xs text-gray-500">
-          <span>Nov</span>
-          <span>Dez</span>
-          <span>Jan</span>
-          <span>Fev</span>
-          <span>Mar</span>
-          <span>Abr</span>
+        <div class="mt-4 relative">
+          <div #entradaChartDiv></div>
+          <div [hidden]="chartVisible" class="absolute inset-0 flex items-center justify-center text-sm text-gray-500 bg-white rounded-lg">
+            Defina o período para exibir o gráfico.
+          </div>
         </div>
       </div>
 
       <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-6">
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold text-gray-900">Saida de insumos</h3>
-          <span class="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Ultimos 6 meses</span>
+          <h3 class="text-base font-semibold text-gray-900">Saída de insumos</h3>
+          <span class="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Últimos meses</span>
         </div>
-        <div class="mt-4">
-          <svg viewBox="0 0 320 180" class="w-full h-56" aria-hidden="true">
-            <g stroke="#e5e7eb" stroke-width="1">
-              <line x1="30" y1="20" x2="30" y2="150" />
-              <line x1="30" y1="150" x2="300" y2="150" />
-              <line x1="30" y1="115" x2="300" y2="115" />
-              <line x1="30" y1="80" x2="300" y2="80" />
-              <line x1="30" y1="45" x2="300" y2="45" />
-            </g>
-            <g fill="#4e43e7">
-              <rect x="45" y="90" width="28" height="60" rx="6" />
-              <rect x="90" y="70" width="28" height="80" rx="6" />
-              <rect x="135" y="105" width="28" height="45" rx="6" />
-              <rect x="180" y="55" width="28" height="95" rx="6" />
-              <rect x="225" y="75" width="28" height="75" rx="6" />
-              <rect x="270" y="95" width="28" height="55" rx="6" />
-            </g>
-          </svg>
-        </div>
-        <div class="mt-2 flex justify-between text-xs text-gray-500">
-          <span>Nov</span>
-          <span>Dez</span>
-          <span>Jan</span>
-          <span>Fev</span>
-          <span>Mar</span>
-          <span>Abr</span>
+        <div class="mt-4 relative">
+          <div #saidaChartDiv></div>
+          <div [hidden]="chartVisible" class="absolute inset-0 flex items-center justify-center text-sm text-gray-500 bg-white rounded-lg">
+            Defina o período para exibir o gráfico.
+          </div>
         </div>
       </div>
     </div>
+    <div [hidden]="!loading && !errorMessage" class="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{{ errorMessage }}</div>
   </div>
-</div>
