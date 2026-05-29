@@ -35,6 +35,24 @@ public class RelatoriosController {
                 .body(new InputStreamResource(stream));
     }
 
+    @PostMapping("/vencimento/excel")
+    public ResponseEntity<Resource> downloadRelatorioVencimentoExcel(@Valid @RequestBody PeriodoRelatorio request) throws IOException {
+        ByteArrayInputStream stream = relatoriosService.gerarRelatorioProdutosProximoVencimentoExcel(request);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=produtos-proximo-vencimento.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(new InputStreamResource(stream));
+    }
+
+    @PostMapping("/vencimento/pdf")
+    public void downloadRelatorioVencimentoPdf(HttpServletResponse response, @Valid @RequestBody PeriodoRelatorio request) throws IOException {
+        relatoriosService.gerarRelatorioProdutosProximoVencimentoPdf(response, request);
+    }
+
     @PostMapping("/produtos-ativos/pdf")
     public void downloadProdutosAtivospdf(HttpServletResponse response, @Valid @RequestBody PeriodoRelatorio request) throws IOException {
         relatoriosService.produtosAtivosPdf(response, request);

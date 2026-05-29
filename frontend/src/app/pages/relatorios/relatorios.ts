@@ -163,7 +163,17 @@ export class Relatorios implements OnDestroy, AfterViewInit {
         });
       }
     } else if (this.tipoRelatorio === 'vencimento') {
-      window.alert('O relatório de produtos próximos ao vencimento ainda não foi implementado na API.');
+      if (this.formatoArquivo === 'pdf') {
+        this.api.baixarRelatorioVencimentoPdf(payload).subscribe({
+          next: (blob: Blob) => this.efetuarDownloadNavegador(blob, 'relatorio-vencimento.pdf'),
+          error: (err) => this.tratarErroDownload(err, 'PDF'),
+        });
+      } else if (this.formatoArquivo === 'xlsx') {
+        this.api.baixarRelatorioVencimentoExcel(payload).subscribe({
+          next: (blob: Blob) => this.efetuarDownloadNavegador(blob, 'relatorio-vencimento.xlsx'),
+          error: (err) => this.tratarErroDownload(err, 'XLSX'),
+        });
+      }
     } else {
       window.alert('Tipo de relatório não reconhecido.');
     }
