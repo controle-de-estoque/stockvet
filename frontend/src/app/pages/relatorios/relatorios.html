@@ -64,6 +64,7 @@
           id="data_inicial"
           [(ngModel)]="dataInicial"
           (ngModelChange)="onRelatorioFiltersChange()"
+          (input)="onRelatorioFiltersChange($event)"
           class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
         >
       </div>
@@ -75,6 +76,7 @@
           id="data_final"
           [(ngModel)]="dataFinal"
           (ngModelChange)="onRelatorioFiltersChange()"
+          (input)="onRelatorioFiltersChange($event)"
           class="w-full border border-gray-800 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
         >
       </div>
@@ -88,9 +90,6 @@
         </div>
         <div class="mt-4 relative">
           <div #entradaChartDiv></div>
-          <div [hidden]="chartVisible" class="absolute inset-0 flex items-center justify-center text-sm text-gray-500 bg-white rounded-lg">
-            Defina o período para exibir o gráfico.
-          </div>
         </div>
       </div>
 
@@ -101,9 +100,6 @@
         </div>
         <div class="mt-4 relative">
           <div #saidaChartDiv></div>
-          <div [hidden]="chartVisible" class="absolute inset-0 flex items-center justify-center text-sm text-gray-500 bg-white rounded-lg">
-            Defina o período para exibir o gráfico.
-          </div>
         </div>
       </div>
     </div>
