@@ -13,4 +13,4 @@ USER spring:spring
 
 COPY --from=build /app/target/*.jar app.jar
 
-ENTRYPOINT ["java", "-XX:+UseParallelGC", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:+UseParallelGC", "-Xmx300m", "-XX:MaxRAMPercentage=60.0", "-jar", "app.jar"]
