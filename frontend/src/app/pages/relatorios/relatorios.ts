@@ -46,64 +46,40 @@ export class Relatorios implements OnDestroy, AfterViewInit {
   constructor(private api: Api) {}
 
   ngAfterViewInit(): void {
-    this.initializeCharts();
+    const today = new Date();
+    this.dataFinal = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    this.initializeCharts().then(() => {
+      setTimeout(() => {
+        this.onRelatorioFiltersChange();
+      }, 500);
+    });
   }
 
   ngOnDestroy(): void {
     this.apiSubscription?.unsubscribe();
   }
 
-  private initializeCharts(): void {
-    const baseOptions = {
-      chart: { toolbar: { show: false }, height: 280 },
-      colors: ['#4e43e7'],
-      grid: { borderColor: 'rgba(226, 232, 240, 0.7)', padding: { left: 10, right: 10, bottom: 30 } },
-      xaxis: { type: 'category', labels: { style: { colors: '#374151', fontSize: '12px' } } },
-      yaxis: { min: 0, forceNiceScale: true, labels: { style: { colors: '#374151' } } },
-      dataLabels: { enabled: false },
-      tooltip: { x: { show: true } },
-    };
-
-    if (this.entradaChartDiv?.nativeElement) {
-      this.entradaChart = new ApexCharts(this.entradaChartDiv.nativeElement, {
-        ...baseOptions,
-        chart: { ...baseOptions.chart, type: 'line' },
-        series: [],
-        colors: ['#4e43e7'],
-        stroke: { curve: 'smooth', width: 3 },
-        markers: { size: 6, strokeWidth: 2, strokeColors: ['#4e43e7'] },
-        fill: { type: 'solid', opacity: 0.15 },
-      });
-      this.entradaChart.render();
-    }
-
-    if (this.saidaChartDiv?.nativeElement) {
-      this.saidaChart = new ApexCharts(this.saidaChartDiv.nativeElement, {
-        ...baseOptions,
-        chart: { ...baseOptions.chart, type: 'bar' },
-        series: [],
-        plotOptions: { bar: { borderRadius: 4 } },
-      });
-      this.saidaChart.render();
-    }
+  private initializeCharts(): Promise<void> {
+    this.entradaChart = undefined;
+    this.saidaChart = undefined;
+    return Promise.resolve();
   }
 
-  onRelatorioFiltersChange(): void {
-    // Datas são opcionais mas se uma foi preenchida, exige a outra
-    if ((this.dataInicial && !this.dataFinal) || (!this.dataInicial && this.dataFinal)) {
-      return; // aguarda preencher as duas
+  onRelatorioFiltersChange(event?: Event): void {
+    if (event?.target) {
+      const input = event.target as HTMLInputElement;
+      if (input.id === 'data_inicial') this.dataInicial = input.value;
+      if (input.id === 'data_final') this.dataFinal = input.value;
     }
 
-    // Se ambas as datas estão vazias, reseta os gráficos
-    if (!this.dataInicial && !this.dataFinal) {
-      this.resetCharts();
-      return;
-    }
+    const today = new Date();
+    const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
     const filtro: RelatorioFiltro = {
       tipo: this.tipoRelatorio,
       inicio: this.dataInicial ? `${this.dataInicial}T00:00:00` : null,
-      fim: this.dataFinal ? `${this.dataFinal}T23:59:59` : null,
+      fim: this.dataFinal ? `${this.dataFinal}T23:59:59` : `${todayFormatted}T23:59:59`,
     };
 
     this.fetchCharts(filtro);
@@ -171,6 +147,7 @@ export class Relatorios implements OnDestroy, AfterViewInit {
   }
 
   private fetchCharts(filtro: RelatorioFiltro): void {
+    this.chartVisible = true;
     const estoqueId = localStorage.getItem('estoque');
     if (!estoqueId) {
       this.loading = false;
@@ -180,7 +157,6 @@ export class Relatorios implements OnDestroy, AfterViewInit {
 
     this.loading = true;
     this.errorMessage = '';
-    this.resetCharts();
 
     this.apiSubscription?.unsubscribe();
     this.apiSubscription = this.api.buscarMovimentacoes()
@@ -214,18 +190,11 @@ export class Relatorios implements OnDestroy, AfterViewInit {
     return true;
   }
 
-  private resetCharts(): void {
-    this.chartVisible = false;
-    this.entradaChart?.updateSeries([]);
-    this.saidaChart?.updateSeries([]);
-  }
+  private resetCharts(): void {}
 
   private buildCharts(movimentacoes: MovimentacaoApi[], filtro: RelatorioFiltro): void {
     const movimentosFiltrados = movimentacoes
-      .map((mov) => ({
-        ...mov,
-        tipo: String(mov.tipo || '').toLowerCase(),
-      }))
+      .map((mov) => ({ ...mov, tipo: String(mov.tipo || '').toLowerCase() }))
       .filter((mov) => this.isInDateRange(mov.dataHoraMovimentacao, filtro.inicio, filtro.fim));
 
     const entradas = movimentosFiltrados.filter((mov) => mov.tipo === 'entrada');
@@ -234,39 +203,49 @@ export class Relatorios implements OnDestroy, AfterViewInit {
     const entradasPorMes = this.aggregatePorMes(entradas);
     const saidasPorMes = this.aggregatePorMes(saidas);
 
-    // Gera todos os meses do período (máx 6), mesmo sem movimentações
     const allKeys = this.generateMonthRange(filtro.inicio, filtro.fim);
-
     const labels = allKeys.map((key) => this.formatMonthLabelFromKey(key));
     const entradaData = allKeys.map((key) => entradasPorMes.get(key)?.value ?? 0);
     const saidaData = allKeys.map((key) => saidasPorMes.get(key)?.value ?? 0);
 
-    this.entradaChart?.updateOptions({
-      xaxis: { categories: labels },
-      grid: { padding: { left: 10, right: 10, bottom: 20 } },
-    });
-    this.entradaChart?.updateSeries([
-      {
-        name: 'Entradas',
-        data: entradaData,
-      },
-    ]);
+    const baseOptions = {
+      colors: ['#4e43e7'],
+      grid: { borderColor: 'rgba(226, 232, 240, 0.7)', padding: { left: 10, right: 10, bottom: 20 } },
+      xaxis: { categories: labels, type: 'category' as const, labels: { style: { colors: '#374151', fontSize: '12px' } } },
+      yaxis: { min: 0, forceNiceScale: true, labels: { style: { colors: '#374151' } } },
+      dataLabels: { enabled: false },
+      tooltip: { x: { show: true } },
+      chart: { toolbar: { show: false }, height: 280 },
+    };
 
-    this.saidaChart?.updateOptions({
-      xaxis: { categories: labels },
-      grid: { padding: { left: 10, right: 10, bottom: 20 } },
-    });
-    this.saidaChart?.updateSeries([
-      {
-        name: 'Saídas',
-        data: saidaData,
-      },
-    ]);
-
-    this.chartVisible = allKeys.length > 0;
-    if (!this.chartVisible) {
-      this.errorMessage = 'Nenhum registro encontrado para o período selecionado.';
+    // Destroy and recreate entrada chart
+    if (this.entradaChart) { this.entradaChart.destroy(); }
+    if (this.entradaChartDiv?.nativeElement) {
+      this.entradaChart = new ApexCharts(this.entradaChartDiv.nativeElement, {
+        ...baseOptions,
+        chart: { ...baseOptions.chart, type: 'line' as const },
+        series: [{ name: 'Entradas', data: entradaData }],
+        stroke: { curve: 'smooth', width: 3 },
+        markers: { size: 6, strokeWidth: 2, strokeColors: ['#4e43e7'] },
+        fill: { type: 'solid', opacity: 0.15 },
+      });
+      this.entradaChart.render();
     }
+
+    // Destroy and recreate saida chart
+    if (this.saidaChart) { this.saidaChart.destroy(); }
+    if (this.saidaChartDiv?.nativeElement) {
+      this.saidaChart = new ApexCharts(this.saidaChartDiv.nativeElement, {
+        ...baseOptions,
+        chart: { ...baseOptions.chart, type: 'bar' as const },
+        series: [{ name: 'Saídas', data: saidaData }],
+        plotOptions: { bar: { borderRadius: 4 } },
+      });
+      this.saidaChart.render();
+    }
+
+    this.chartVisible = true;
+    this.errorMessage = '';
 
     console.log('Relatorios: allKeys', allKeys);
     console.log('Relatorios: labels', labels);
@@ -320,33 +299,41 @@ export class Relatorios implements OnDestroy, AfterViewInit {
     return agrupamento;
   }
 
-  private  generateMonthRange(inicio: string | null, fim: string | null): string[] {
+  private generateMonthRange(inicio: string | null, fim: string | null): string[] {
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
 
-    // Se não tiver datas, mostra os últimos 6 meses
     let dataFim = fim ? new Date(fim) : new Date(hoje);
     dataFim.setHours(0, 0, 0, 0);
-    dataFim.setDate(1); // Primeiro dia do mês
+    dataFim.setDate(1);
 
-    let dataInicio = inicio ? new Date(inicio) : new Date(dataFim);
-    dataInicio.setHours(0, 0, 0, 0);
-    dataInicio.setDate(1);
+    // Default start: 6 months back from dataFim
+    const defaultInicio = new Date(dataFim);
+    defaultInicio.setMonth(defaultInicio.getMonth() - 5);
 
-    // Limita a 6 meses: se o range for maior, corta pela data final
-    const maxInicio = new Date(dataFim);
-    maxInicio.setMonth(maxInicio.getMonth() - 5); // 6 meses atrás (inclusive)
-    
-    const inicioEfetivo = dataInicio < maxInicio ? maxInicio : dataInicio;
+    let inicioEfetivo: Date;
+    if (inicio) {
+      const dataInicio = new Date(inicio);
+      dataInicio.setHours(0, 0, 0, 0);
+      dataInicio.setDate(1);
+      // dataInicial only restricts (moves start forward), never expands beyond 6 months
+      inicioEfetivo = dataInicio > defaultInicio ? dataInicio : defaultInicio;
+    } else {
+      inicioEfetivo = defaultInicio;
+    }
 
     const result: string[] = [];
     const current = new Date(inicioEfetivo);
 
-    // Gera todas as keys de mês do range
     while (current <= dataFim) {
       const key = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}`;
       result.push(key);
       current.setMonth(current.getMonth() + 1);
+    }
+
+    // Hard cap: nunca exibe mais que 6 meses, sempre mantém os mais recentes
+    if (result.length > 6) {
+      result.splice(0, result.length - 6);
     }
 
     return result.sort();
