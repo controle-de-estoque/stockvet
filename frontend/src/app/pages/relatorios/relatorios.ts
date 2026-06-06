@@ -69,9 +69,10 @@ export class Relatorios implements OnDestroy, AfterViewInit {
         ...baseOptions,
         chart: { ...baseOptions.chart, type: 'line' },
         series: [],
-        stroke: { curve: 'smooth', width: 2 },
-        markers: { size: 5 },
-        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0 } },
+        colors: ['#4e43e7'],
+        stroke: { curve: 'smooth', width: 3 },
+        markers: { size: 6, strokeWidth: 2, strokeColors: ['#4e43e7'] },
+        fill: { type: 'solid', opacity: 0.15 },
       });
       this.entradaChart.render();
     }
