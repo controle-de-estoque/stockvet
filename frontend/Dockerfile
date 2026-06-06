@@ -14,6 +14,4 @@ RUN npm install -g serve
 
 COPY --from=build /app/dist ./dist
 
-EXPOSE 80
-
-CMD ["sh", "-c", "if [ -d /app/dist/frontend/browser ]; then exec serve -s /app/dist/frontend/browser -l 80; elif [ -d /app/dist/frontend ]; then exec serve -s /app/dist/frontend -l 80; else echo 'Built frontend assets not found' >&2; exit 1; fi"]
+CMD ["sh", "-c", "if [ -d /app/dist/frontend/browser ]; then exec serve -s /app/dist/frontend/browser -l $PORT; elif [ -d /app/dist/frontend ]; then exec serve -s /app/dist/frontend -l $PORT; else echo 'Arquivos de build não encontrados' >&2; exit 1; fi"]
