@@ -1,17 +1,34 @@
 spring:
   application:
     name: backend
+
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5000/stockvet}
+    url: ${DATABASE_URL:${DB_URL:jdbc:postgresql://localhost:5000/stockvet}}
     username: ${DB_USERNAME:stockvet}
     password: ${DB_PASSWORD:stockvet}
+    driver-class-name: org.postgresql.Driver
+    
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 20000
+
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: false
+        format_sql: false
+    open-in-view: false
 
 jwt:
   secret: ${JWT_SECRET:hRg2nzthwKbldOyO6tMRfmP0KOGZo04SuggwrCP71gg}
   expiration: ${JWT_EXPIRATION:3600000}
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
