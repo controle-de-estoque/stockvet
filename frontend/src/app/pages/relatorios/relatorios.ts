@@ -140,14 +140,42 @@ export class Relatorios implements OnDestroy, AfterViewInit {
         });
       }
     } else if (this.tipoRelatorio === 'vencimento') {
+      const inicio = this.dataInicial
+        ? new Date(`${this.dataInicial}T00:00:00`)
+        : new Date(); // default to today if not set
+
+      // Start counting from the NEXT month after inicio
+      const maxFim = new Date(inicio);
+      maxFim.setMonth(maxFim.getMonth() + 3); // +1 to skip current month, +2 for the window
+      maxFim.setDate(0); // last day of the 2nd month after inicio's month
+      maxFim.setHours(23, 59, 59);
+
+      // If user set dataFinal, use it but never exceed the 2-month cap
+      let fimEfetivo: Date;
+      if (this.dataFinal) {
+        const userFim = new Date(`${this.dataFinal}T23:59:59`);
+        fimEfetivo = userFim < maxFim ? userFim : maxFim;
+      } else {
+        fimEfetivo = maxFim;
+      }
+
+      const toISO = (d: Date) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+
+      const vencimentoPayload = {
+        estoque: estoqueId,
+        inicio: toISO(inicio),
+        fim: toISO(fimEfetivo),
+      };
+
       if (this.formatoArquivo === 'pdf') {
-        this.api.baixarRelatorioVencimentoPdf(payload).subscribe({
-          next: (blob: Blob) => this.efetuarDownloadNavegador(blob, 'relatorio-vencimento.pdf'),
+        this.api.baixarRelatorioVencimentoPdf(vencimentoPayload).subscribe({
+          next: (blob: Blob) => this.efetuarDownloadNavegador(blob, 'relatorio-produtos-vencimento.pdf'),
           error: (err) => this.tratarErroDownload(err, 'PDF'),
         });
       } else if (this.formatoArquivo === 'xlsx') {
-        this.api.baixarRelatorioVencimentoExcel(payload).subscribe({
-          next: (blob: Blob) => this.efetuarDownloadNavegador(blob, 'relatorio-vencimento.xlsx'),
+        this.api.baixarRelatorioVencimentoExcel(vencimentoPayload).subscribe({
+          next: (blob: Blob) => this.efetuarDownloadNavegador(blob, 'relatorio-produtos-vencimento.xlsx'),
           error: (err) => this.tratarErroDownload(err, 'XLSX'),
         });
       }
