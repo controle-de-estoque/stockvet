@@ -37,6 +37,6 @@ public class ProcedimentoService {
     }
 
     public List<Procedimento> buscarPorEstoque(UUID estoqueId) {
-        return repository.findByEstoqueAndAtivoTrue(estoqueId);
+        return repository.findByEstoque(estoqueId);
     }
 }

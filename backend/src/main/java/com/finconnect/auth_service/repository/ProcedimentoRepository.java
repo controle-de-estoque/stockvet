@@ -9,7 +9,7 @@ import com.finconnect.auth_service.entity.Procedimento;
 @Repository
 public interface ProcedimentoRepository extends JpaRepository<Procedimento, UUID> {
 
-    List<Procedimento> findByEstoqueAndAtivoTrue(UUID estoqueId);
+    List<Procedimento> findByEstoque(UUID estoqueId);
 
     boolean existsByEstoqueAndNomeIgnoreCaseAndAtivoTrue(UUID estoqueId, String nome);
 }

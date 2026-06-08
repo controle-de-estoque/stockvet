@@ -1,33 +1,34 @@
-<div class="flex flex-col w-full md:max-w-[80%] mx-auto gap-4 p-4 md:p-0">
-
+<div class="min-h-screen">
+  <div class="flex flex-col w-full md:max-w-[80%] mx-auto gap-4 p-4 md:p-6">
+    
     <app-navbar></app-navbar>
 
-    <div class="bg-white p-4 md:p-6 flex flex-col gap-6 rounded-md shadow">
+    <div class="bg-white p-4 md:p-6 flex flex-col gap-6 rounded-md shadow-lg border border-gray-100">
         
         <div class="flex justify-between items-center border-b border-gray-200 pb-4">
-            <h2 class="font-bold text-lg md:text-xl">Novo Procedimento</h2>
+            <h2 class="font-bold text-lg md:text-xl text-gray-800">Novo Procedimento</h2>
             <span class="text-sm font-medium text-gray-500">Passo {{ etapaAtual }} de 2</span>
         </div>
 
         @if (etapaAtual === 1) {
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 animate-in fade-in duration-300">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Procedimento</label>
-                    <input type="text" [(ngModel)]="procedimento.nome" placeholder="Ex: Castração" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]">
+                    <input type="text" [(ngModel)]="procedimento.nomeProcedimento" placeholder="Ex: Castração" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Espécie</label>
-                        <input type="text" [(ngModel)]="procedimento.especie" placeholder="Ex: Canina" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]">
+                        <input type="text" [(ngModel)]="procedimento.nomeEspecie" placeholder="Ex: Canina" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Gênero</label>
-                        <select [(ngModel)]="procedimento.genero" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]">
-                            <option value="" disabled selected>Selecione o gênero...</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Feminino">Feminino</option>
+                        <select [(ngModel)]="procedimento.genero" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7] bg-white">
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
                         </select>
                     </div>
                 </div>
@@ -42,18 +43,14 @@
         }
 
         @if (etapaAtual === 2) {
-            <div class="flex flex-col gap-4">
-                
+            <div class="flex flex-col gap-4 animate-in fade-in duration-300">
                 <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r">
-                    <div class="flex items-center gap-3">
-                        <svg class="text-blue-500 w-6 h-6 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                        <p class="text-sm text-blue-800 font-medium">
-                            Atenção: A quantidade de produtos selecionados deve levar em consideração um <strong class="font-bold">animal com 1KG</strong> como referência.
-                        </p>
-                    </div>
+                    <p class="text-sm text-blue-800 font-medium">
+                        Atenção: A quantidade deve considerar um <strong>animal com 1KG</strong> como referência.
+                    </p>
                 </div>
 
-                <div class="bg-gray-50 border border-gray-200 p-4 rounded-md flex flex-col md:flex-row items-end gap-3 mt-2">
+                <div class="bg-gray-50 border border-gray-200 p-4 rounded-md flex flex-col md:flex-row items-end gap-3">
                     <div class="w-full md:w-3/5">
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Produto</label>
                         <input type="text" [(ngModel)]="novoProduto.nome" placeholder="Ex: Anestésico X" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]">
@@ -69,45 +66,37 @@
                     </div>
                 </div>
 
-                @if (produtos.length > 0) {
-                    <div class="border border-gray-200 rounded-md overflow-hidden mt-4">
-                        <table class="w-full text-sm text-left">
-                            <thead class="bg-gray-100 text-gray-700 border-b border-gray-200">
-                                <tr>
-                                    <th class="px-4 py-2 font-medium">Produto</th>
-                                    <th class="px-4 py-2 font-medium text-center">Qtd (por 1kg)</th>
-                                    <th class="px-4 py-2 font-medium text-center w-16">Ação</th>
+                <div class="border border-gray-200 rounded-md overflow-hidden">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-100 text-gray-700 border-b border-gray-200">
+                            <tr>
+                                <th class="px-4 py-2">Produto</th>
+                                <th class="px-4 py-2 text-center">Qtd (1kg)</th>
+                                <th class="px-4 py-2 text-center w-16">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (prod of produtos; track $index) {
+                                <tr class="border-b border-gray-200">
+                                    <td class="px-4 py-2">{{ prod.nome }}</td>
+                                    <td class="px-4 py-2 text-center">{{ prod.quantidade }}</td>
+                                    <td class="px-4 py-2 text-center">
+                                        <button (click)="removerProduto($index)" class="text-red-600 hover:text-red-800">Excluir</button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @for (prod of produtos; track $index) {
-                                    <tr class="border-b border-gray-200 last:border-0">
-                                        <td class="px-4 py-2">{{ prod.nome }}</td>
-                                        <td class="px-4 py-2 text-center">{{ prod.quantidade }}</td>
-                                        <td class="px-4 py-2 text-center">
-                                            <button (click)="removerProduto($index)" class="text-black hover:text-red-600 transition-colors cursor-pointer flex items-center justify-center mx-auto" title="Remover produto">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                } @else {
-                    <p class="text-sm text-gray-500 text-center mt-4">Nenhum produto adicionado ainda.</p>
-                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
 
-                <div class="flex justify-between mt-6 pt-4 border-t border-gray-200">
-                    <button (click)="voltarEtapa()" class="border border-gray-300 text-gray-700 px-6 py-2 rounded text-sm font-medium hover:bg-gray-50 transition cursor-pointer">
-                        Voltar
-                    </button>
-                    <button (click)="salvarProcedimento()" class="bg-green-600 text-white px-6 py-2 rounded text-sm font-medium hover:bg-green-700 transition cursor-pointer">
+                <div class="flex justify-between mt-4 pt-4 border-t border-gray-200">
+                    <button (click)="voltarEtapa()" class="text-gray-600 px-6 py-2 rounded text-sm hover:underline">Voltar</button>
+                    <button (click)="salvarProcedimento()" class="bg-green-600 text-white px-6 py-2 rounded text-sm font-medium hover:bg-green-700 transition">
                         Finalizar Cadastro
                     </button>
                 </div>
             </div>
         }
-
     </div>
+  </div>
 </div>
