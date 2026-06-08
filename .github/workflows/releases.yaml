@@ -1,21 +1,30 @@
-name: release-please
+name: Gerar Release Automática
 
 on:
   push:
-    branches:
-      - master
-  workflow_dispatch:
-
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+    tags:
+      - 'v*'
 
 jobs:
-  release-please:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: googleapis/release-please-action@v3
+      - name: Checkout do código
+        uses: actions/checkout@v4
         with:
-          release-type: simple
+          fetch-depth: 0
+
+      - name: Criar Release do GitHub
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
