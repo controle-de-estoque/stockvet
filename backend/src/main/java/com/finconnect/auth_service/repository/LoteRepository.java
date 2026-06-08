@@ -1,5 +1,6 @@
 package com.finconnect.auth_service.repository;
 
+import java.time.LocalDate;
 import java.util.UUID;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,9 @@ public interface LoteRepository extends JpaRepository<Lote, String> {
     Optional<Lote> findByIdentificadorAndEstoqueId(String identificador, UUID estoque);
 
     List<Lote> findAllByEstoqueId(UUID estoqueId);
+
+    @Query("SELECT l FROM Lote l WHERE l.estoque.id = :estoque AND l.dataValidade BETWEEN :inicio AND :fim ORDER BY l.dataValidade ASC")
+    List<Lote> findLotesProximoVencimento(@Param("estoque") UUID estoque, @Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 
     @Query("SELECT l FROM Lote l WHERE l.produto.id = :produto AND l.estoque.id = :estoque AND l.quantidadeAtual > 0 ORDER BY l.dataValidade ASC")
     List<Lote> findLotesDisponiveisFEFO(@Param("produto") UUID produto, @Param("estoque") UUID estoque);
