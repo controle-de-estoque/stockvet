@@ -1,93 +1,72 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
+import { Api } from '../../api';
 
 export interface Procedimento {
-  id: number;
+  id: string;
   nome: string;
   especie: string;
-  genero: 'Macho' | 'Fêmea' | 'Ambos';
-  peso: number;
-  produtos: string;
+  genero: string;
+  ativo: boolean;
 }
 
 @Component({
   selector: 'app-procedimentos',
   standalone: true,
-  imports: [
-    CommonModule, 
-    FormsModule, 
-    RouterModule,
-    Navbar
-  ],
-  templateUrl: './procedimentos.html',
-  styleUrl: './procedimentos.css'
+  imports: [CommonModule, FormsModule, RouterModule, Navbar],
+  templateUrl: './procedimentos.html'
 })
-export class ProcedimentosComponent {
-  
-  // Variável ligada ao input de busca via [(ngModel)]
-  termoBusca: string = '';
+export class ProcedimentosComponent implements OnInit {
+  termoBusca = signal('');
+  mostrarApenasAtivos = signal(true);
+  procedimentos = signal<Procedimento[]>([]);
 
-  // 2. Mock de dados (Simulando o que viria do seu Backend/API)
-  procedimentos: Procedimento[] = [
-    {
-      id: 1,
-      nome: 'Castração',
-      especie: 'Canina',
-      genero: 'Macho',
-      peso: 15.0,
-      produtos: 'Anestésico (10ml), Fio de Sutura (1 un), Gaze (5 un)'
-    },
-    {
-      id: 2,
-      nome: 'Limpeza de Tártaro',
-      especie: 'Felina',
-      genero: 'Fêmea',
-      peso: 4.2,
-      produtos: 'Sedativo (2ml), Pasta Profilática (1 un), Soro (50ml)'
-    },
-    {
-      id: 3,
-      nome: 'Amputação de Membro',
-      especie: 'Canina',
-      genero: 'Ambos',
-      peso: 22.5,
-      produtos: 'Anestésico (20ml), Fio Cirúrgico (3 un), Antibiótico (1 un)'
-    },
-    {
-      id: 4,
-      nome: 'Castração',
-      especie: 'Felina',
-      genero: 'Fêmea',
-      peso: 3.5,
-      produtos: 'Anestésico (5ml), Fio de Sutura (1 un), Escalpelo (1 un)'
+  totalRegistrados = computed(() => this.procedimentos().length);
+  totalAtivos = computed(() => this.procedimentos().filter(p => p.ativo).length);
+  totalInativos = computed(() => this.procedimentos().filter(p => !p.ativo).length);
+
+  procedimentosFiltrados = computed(() => {
+    let lista = this.procedimentos();
+    if (this.mostrarApenasAtivos()) {
+      lista = lista.filter(p => p.ativo);
     }
-  ];
-
-  // 3. Método acionado ao digitar no input (ngModelChange)
-  onSearchChange(termo: string): void {
-    this.termoBusca = termo;
-  }
-
-  procedimentosFiltrados(): Procedimento[] {
-    if (!this.termoBusca) {
-      return this.procedimentos;
-    }
-
-    const busca = this.termoBusca.toLowerCase().trim();
-
-    return this.procedimentos.filter(p => 
+    const busca = this.termoBusca().toLowerCase().trim();
+    if (!busca) return lista;
+    return lista.filter(p => 
       p.nome.toLowerCase().includes(busca) ||
       p.especie.toLowerCase().includes(busca)
     );
+  });
+
+  constructor(private api: Api) {}
+
+  ngOnInit(): void {
+    this.carregarProcedimentos();
   }
 
-  deletarProcedimento(id: number): void {
-    if(confirm('Tem certeza que deseja deletar este procedimento?')) {
-      // Remove o procedimento da lista localmente (mock)
-      this.procedimentos = this.procedimentos.filter(p => p.id !== id);
+  carregarProcedimentos(): void {
+    this.api.buscarProcedimentos().subscribe({
+      next: (data) => this.procedimentos.set(data),
+      error: (err) => console.error(err)
+    });
+  }
+
+  onSearchChange(valor: string): void {
+    this.termoBusca.set(valor);
+  }
+
+  inativarProcedimento(id: string): void {
+    if (confirm('Tem certeza que deseja inativar este procedimento?')) {
+      this.api.inativarProcedimento(id).subscribe({
+        next: () => {
+          alert('Procedimento inativado com sucesso!');
+          this.carregarProcedimentos();
+        },
+        error: (err) => alert('Erro ao inativar procedimento.')
+      });
     }
   }
 }

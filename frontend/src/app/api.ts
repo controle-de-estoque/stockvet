@@ -116,4 +116,21 @@ export class Api {
     return this.http.post(`${this.baseUrl}/relatorios/vencimento/pdf`, payload, { responseType: 'blob' });
   }
 
+  buscarProcedimentos(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/procedimentos/estoque/${localStorage.getItem('estoque')}`);
+  }
+
+  cadastrarProcedimento(dados: { 
+  nomeProcedimento: string, 
+    nomeEspecie: string, 
+    genero: string, 
+    estoque: string 
+  }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/procedimentos`, dados, { responseType: 'text' });
+  }
+
+  inativarProcedimento(id: string): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/procedimentos/${id}/inativar`, null, { responseType: 'text' });
+  }
+
 }
