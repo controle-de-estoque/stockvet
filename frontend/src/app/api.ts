@@ -137,4 +137,8 @@ export class Api {
     return this.http.patch(`${this.baseUrl}/procedimentos/${id}/inativar`, null, { responseType: 'text' });
   }
 
+  cadastrarMovimentacaoProcedimento(dados: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/movimentacoes/procedimento`, dados);
+  }
+
 }

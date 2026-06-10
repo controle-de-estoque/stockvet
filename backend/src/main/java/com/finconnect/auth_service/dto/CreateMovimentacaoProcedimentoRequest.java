@@ -5,13 +5,11 @@ import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record CreateMovimentacaoSaidaRequest(
-    @NotNull UUID produto,
+public record CreateMovimentacaoProcedimentoRequest(
+    @NotNull UUID procedimentoId,
+    @NotNull @Positive Double pesoAnimal,
     @NotNull UUID estoque,
     @NotNull UUID movimentadoPor,
-    @NotNull @Positive int quantidade,
     @NotNull LocalDateTime dataHoraMovimentacao,
-    String tipo,
-    String loteId,
-    String dataValidade
+    UUID cessionario
 ) {}
