@@ -3,7 +3,9 @@ package com.finconnect.auth_service.service;
 import com.finconnect.auth_service.dto.ConsumoPorPeriodoRelatorio;
 import com.finconnect.auth_service.dto.PeriodoRelatorio;
 import com.finconnect.auth_service.dto.ProdutoAtivoRelatorio;
+import com.finconnect.auth_service.entity.Lote;
 import com.finconnect.auth_service.entity.TipoMovimentacao;
+import com.finconnect.auth_service.repository.LoteRepository;
 import com.finconnect.auth_service.repository.MovimentacaoLoteRepository;
 import com.finconnect.auth_service.repository.ProdutoRepository;
 import com.lowagie.text.*;
@@ -21,6 +23,7 @@ import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -34,6 +37,9 @@ public class RelatoriosService {
 
     @Autowired
     private MovimentacaoLoteRepository movimentacaoLoteRepository;
+
+    @Autowired
+    private LoteRepository loteRepository;
     
     public ByteArrayInputStream gerarRelatorioDeProdutosAtivos(PeriodoRelatorio request) throws IOException {
         var produtosAtivos = produtoRepository.relatorioProdutosAtivos(request.estoque());
@@ -58,6 +64,99 @@ public class RelatoriosService {
 
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
+        }
+    }
+
+    public ByteArrayInputStream gerarRelatorioProdutosProximoVencimentoExcel(PeriodoRelatorio request) throws IOException {
+        LocalDateTime agora = LocalDateTime.now();
+        var inicio = request.inicio() != null ? request.inicio().toLocalDate() : agora.toLocalDate();
+        var fim = request.fim() != null ? request.fim().toLocalDate() : agora.plusDays(30).toLocalDate();
+
+        var lotes = loteRepository.findLotesProximoVencimento(request.estoque(), inicio, fim);
+        // TODO: utilizar utilitário de geração de Excel para montar o relatório final a partir da lista de lotes.
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Produtos Próximos ao Vencimento");
+
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Produto");
+            headerRow.createCell(1).setCellValue("Lote");
+            headerRow.createCell(2).setCellValue("Validade");
+            headerRow.createCell(3).setCellValue("Quantidade Atual");
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            int rowIdx = 1;
+            for (Lote lote : lotes) {
+                String dataFormatada = lote.getDataValidade().format(dateFormatter);
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(lote.getProduto().getNome());
+                row.createCell(1).setCellValue(lote.getIdentificador());
+                row.createCell(2).setCellValue(dataFormatada);
+                row.createCell(3).setCellValue(lote.getQuantidadeAtual());
+            }
+
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+        }
+    }
+
+    public void gerarRelatorioProdutosProximoVencimentoPdf(HttpServletResponse response, PeriodoRelatorio request) throws IOException {
+        LocalDateTime agora = LocalDateTime.now();
+        var inicio = request.inicio() != null ? request.inicio().toLocalDate() : agora.toLocalDate();
+        var fim = request.fim() != null ? request.fim().toLocalDate() : agora.plusDays(30).toLocalDate();
+
+        var lotes = loteRepository.findLotesProximoVencimento(request.estoque(), inicio, fim);
+        // TODO: utilizar utilitário de geração de PDF para montar o relatório final a partir da lista de lotes.
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=produtos-proximo-vencimento.pdf");
+
+        Document document = new Document(PageSize.A4.rotate());
+        try {
+            PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
+
+            Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Paragraph title = new Paragraph("Produtos Próximos ao Vencimento", fontTitle);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            Font fontDate = FontFactory.getFont(FontFactory.HELVETICA, 10);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            Paragraph date = new Paragraph("Emitido em: " + agora.format(formatter), fontDate);
+            date.setAlignment(Element.ALIGN_RIGHT);
+            document.add(date);
+            document.add(new Paragraph(" "));
+
+            PdfPTable table = new PdfPTable(4);
+            table.setWidthPercentage(100);
+            table.setWidths(new float[] {3f, 2f, 2f, 1.5f});
+
+            Font fontHeader = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+            Stream.of("Produto", "Lote", "Validade", "Quantidade Atual").forEach(columnTitle -> {
+                PdfPCell header = new PdfPCell();
+                header.setBackgroundColor(new Color(217, 217, 217));
+                header.setBorderWidth(1);
+                header.setPhrase(new Phrase(columnTitle, fontHeader));
+                header.setHorizontalAlignment(Element.ALIGN_CENTER);
+                header.setPadding(5);
+                table.addCell(header);
+            });
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            for (Lote lote : lotes) {
+                String dataFormatada = lote.getDataValidade().format(dateFormatter);
+                table.addCell(lote.getProduto().getNome());
+                table.addCell(lote.getIdentificador());
+                table.addCell(dataFormatada);
+                table.addCell(String.valueOf(lote.getQuantidadeAtual()));
+            }
+
+            document.add(table);
+        } catch (DocumentException e) {
+            throw new IOException("Erro ao gerar PDF: " + e.getMessage());
+        } finally {
+            document.close();
         }
     }
 

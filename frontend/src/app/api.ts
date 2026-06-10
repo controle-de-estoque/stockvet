@@ -108,4 +108,12 @@ export class Api {
     return this.http.post(`${this.baseUrl}/relatorios/historico-saida/excel`, payload, { responseType: 'blob' });
   }
 
+  baixarRelatorioVencimentoExcel(payload: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/relatorios/vencimento/excel`, payload, { responseType: 'blob' });
+  }
+
+  baixarRelatorioVencimentoPdf(payload: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/relatorios/vencimento/pdf`, payload, { responseType: 'blob' });
+  }
+
 }

@@ -13,6 +13,8 @@ import { CadastrarUsuario } from './pages/cadastrar-usuario/cadastrar-usuario';
 import { CadastrarCessionario } from './pages/cadastrar-cessionario/cadastrar-cessionario';
 import { Relatorios } from './pages/relatorios/relatorios';
 import { NotFound } from './pages/not-found/not-found';
+import { ProcedimentosComponent } from './pages/procedimentos/procedimentos';
+import { ProcedimentosNovo } from './pages/procedimentos-novo/procedimentos-novo';
 
 export const routes: Routes = [
   {
@@ -66,6 +68,14 @@ export const routes: Routes = [
   {
     path: 'cadastrar-categoria',
     component: CadastrarCategoria
+  },
+  {
+    path: 'procedimentos/novo',
+    component: ProcedimentosNovo
+  },
+  {
+    path: 'procedimentos',
+    component: ProcedimentosComponent
   },
   {
     path: '',
