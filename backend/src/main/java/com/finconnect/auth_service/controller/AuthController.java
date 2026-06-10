@@ -9,23 +9,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import com.finconnect.auth_service.dto.CreateSimpleUserRequest;
-import com.finconnect.auth_service.dto.ResetPasswordRequest;
-import com.finconnect.auth_service.dto.SalvarEstoque;
-import com.finconnect.auth_service.dto.SignInRequest;
-import com.finconnect.auth_service.dto.SignInResponse;
-import com.finconnect.auth_service.dto.SignUpRequest;
-import com.finconnect.auth_service.dto.UserResponse;
+import org.springframework.web.bind.annotation.*;
+import com.finconnect.auth_service.dto.*;
 import com.finconnect.auth_service.entity.Users;
 import com.finconnect.auth_service.exception_handler.exceptions.PetNameIsIncorrectException;
 import com.finconnect.auth_service.exception_handler.exceptions.UserAlredyExistsException;
 import com.finconnect.auth_service.repository.UsersRepository;
+import com.finconnect.auth_service.service.EmailService;
 import com.finconnect.auth_service.service.ProductsService;
 import com.finconnect.auth_service.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -50,6 +40,9 @@ public class AuthController {
 
     @Autowired
     private ProductsService productsService;
+
+    @Autowired
+    private EmailService emailService;
     
     @PostMapping("/signin")
     public ResponseEntity<SignInResponse> authenticateUser(@Valid @RequestBody SignInRequest request) throws BadRequestException {
@@ -60,7 +53,8 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
-        return ResponseEntity.ok().body(new SignInResponse(jwt, this.usersRepository.findEstoqueByEmail(request.username()).orElseThrow(() -> new BadRequestException("Usuário não cadastrado"))));
+        return ResponseEntity.ok().body(new SignInResponse(jwt, this.usersRepository.findEstoqueByEmail(request.username())
+            .orElseThrow(() -> new BadRequestException("Usuário não cadastrado"))));
     }
 
     @PostMapping("/signup")
@@ -80,24 +74,37 @@ public class AuthController {
 
         usersRepository.save(newUser);
 
+        emailService.sendHtmlEmail(new SendEmailRequest(
+            request.email(),
+            "Bem-vindo ao StockVet",
+            "Olá " + request.firstName() + ", seu estoque foi criado com sucesso!"
+        ));
+        
         return ResponseEntity.ok("Estoque criado: " + newUser.getEstoque().toString());
     }
 
-    @PostMapping("reset-password")
+    @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) throws Exception {
-        Users user = usersRepository.findByEmail(request.email()).orElseThrow(() -> new Exception("User not found"));
+        Users user = usersRepository.findByEmail(request.email())
+            .orElseThrow(() -> new Exception("User not found"));
         
         if(!user.getFirstPetName().equalsIgnoreCase(request.firstPetName())) {
             throw new PetNameIsIncorrectException("Nome do pet está incorreto");
         }
 
         user.setPassword(encoder.encode(request.password()));
-
         this.usersRepository.save(user);
+
+        emailService.sendHtmlEmail(new SendEmailRequest(
+            request.email(),
+            "Redefinição de senha realizada",
+            "Sua senha foi redefinida com sucesso!"
+        ));
+        
         return ResponseEntity.ok("Password changed successfully");
     }
 
-    @PostMapping("/register-simple-user") //falta implementar os testes unitários
+    @PostMapping("/register-simple-user")
     public ResponseEntity<String> registerSimpleUser(@Valid @RequestBody CreateSimpleUserRequest request) throws BadRequestException {
         if(usersRepository.findByEmail(request.email()).isPresent()) {
             throw new UserAlredyExistsException("Usuário já cadastrado");
@@ -114,6 +121,12 @@ public class AuthController {
 
         usersRepository.save(newUser);
 
+        emailService.sendHtmlEmail(new SendEmailRequest(
+            request.email(),
+            "Conta criada com sucesso",
+            "Seu acesso ao sistema foi liberado!"
+        ));
+        
         return ResponseEntity.ok("Usuário criado com sucesso");
     }
 
@@ -121,7 +134,7 @@ public class AuthController {
     public ResponseEntity<List<UserResponse>> findUsersByEstoque(@PathVariable UUID estoque) {
         return ResponseEntity.ok(
             usersRepository.findAll().stream()
-                .filter(user -> estoque.equals(user.getEstoque()) && user.isAdmin() == false)
+                .filter(user -> estoque.equals(user.getEstoque()) && !user.isAdmin())
                 .map(user -> new UserResponse(
                     user.getId(),
                     user.getFirstName() + " " + user.getLastName(),
@@ -132,9 +145,11 @@ public class AuthController {
     }
 
     @GetMapping("/users/uuid/{email}")
-    public ResponseEntity<UUID> findUsersByEstoque(@PathVariable String email) {
+    public ResponseEntity<UUID> findUuidByEmail(@PathVariable String email) {
         return ResponseEntity.ok(
-            usersRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado para o email: " + email)).getId()
+            usersRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"))
+                .getId()
         );
     }
 }
