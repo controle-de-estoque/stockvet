@@ -1,5 +1,7 @@
 package com.finconnect.auth_service.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import com.finconnect.auth_service.dto.Genero;
 import jakarta.persistence.*;
@@ -36,4 +38,7 @@ public class Procedimento {
     @NotNull
     @Column(name = "is_ativo", nullable = false)
     private boolean ativo = true;
+    
+    @OneToMany(mappedBy = "procedimento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ItemProcedimento> itens = new ArrayList<>();
 }

@@ -31,6 +31,11 @@ public class ProcedimentoController {
         return ResponseEntity.ok(procedimentoService.buscarPorEstoque(estoqueId));
     }
 
+    @GetMapping("/{procedimento}")
+    public ResponseEntity<Procedimento> findByIdEntity( @PathVariable UUID procedimento) {
+        return ResponseEntity.ok(procedimentoService.findById(procedimento));
+    }
+
     // Inativar um procedimento (Soft Delete)
     @PatchMapping("/{id}/inativar")
     public ResponseEntity<Void> inativarProcedimento(@PathVariable UUID id) {
