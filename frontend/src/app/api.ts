@@ -120,10 +120,11 @@ export class Api {
   }
 
   cadastrarProcedimento(dados: { 
-  nomeProcedimento: string, 
+    nomeProcedimento: string, 
     nomeEspecie: string, 
     genero: string, 
-    estoque: string 
+    estoque: string,
+    itens: { produtoId: string, quantidade: number, tipo: 'fixo' | 'variavel' }[] 
   }): Observable<any> {
     return this.http.post(`${this.baseUrl}/procedimentos`, dados, { responseType: 'text' });
   }
