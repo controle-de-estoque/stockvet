@@ -39,6 +39,6 @@ public class Procedimento {
     @Column(name = "is_ativo", nullable = false)
     private boolean ativo = true;
     
-    @OneToMany(mappedBy = "procedimento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "procedimento", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ItemProcedimento> itens = new ArrayList<>();
 }
