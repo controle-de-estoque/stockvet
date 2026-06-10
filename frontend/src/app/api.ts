@@ -119,6 +119,10 @@ export class Api {
     return this.http.get(`${this.baseUrl}/procedimentos/estoque/${localStorage.getItem('estoque')}`);
   }
 
+  buscarProcedimentoPorId(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/procedimentos/${id}`);
+  }
+
   cadastrarProcedimento(dados: { 
     nomeProcedimento: string, 
     nomeEspecie: string, 

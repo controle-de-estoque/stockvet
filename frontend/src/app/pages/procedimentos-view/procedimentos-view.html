@@ -1,0 +1,130 @@
+<div class="flex flex-col w-full md:max-w-[80%] mx-auto gap-12 p-4 md:p-0">
+  <app-navbar></app-navbar>
+
+  <div class="w-full bg-white rounded-lg shadow-sm p-6 sm:p-10 border border-gray-100 mb-12">
+    
+    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+      <h2 class="text-2xl font-bold text-gray-900">Detalhes do Procedimento</h2>
+      
+      @if (!carregando() && procedimento()) {
+        <span 
+          class="px-4 py-1.5 rounded-full text-sm font-bold tracking-wide uppercase self-start sm:self-auto"
+          [class.bg-indigo-100]="procedimento()?.ativo"
+          [class.text-indigo-700]="procedimento()?.ativo"
+          [class.bg-red-100]="!procedimento()?.ativo"
+          [class.text-red-700]="!procedimento()?.ativo"
+        >
+          {{ procedimento()?.ativo ? 'Ativo' : 'Inativo' }}
+        </span>
+      }
+    </div>
+
+    @if (carregando()) {
+      <div class="flex justify-center items-center py-12 text-gray-500">
+        Carregando informações...
+      </div>
+    } @else if (procedimento()) {
+      
+      <div class="space-y-6 mb-10">
+        <h3 class="text-lg font-semibold text-[#4e43e7] border-b border-gray-200 pb-2">Informações Gerais</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label class="block text-sm font-semibold text-gray-900 mb-2">Nome do Procedimento</label>
+            <div class="w-full border border-gray-200 rounded-md px-4 py-2.5 bg-gray-50 text-gray-800 font-medium min-h-[46px] flex items-center">
+              {{ procedimento()?.nome || '-' }} 
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-900 mb-2">Espécie Alvo</label>
+            <div class="w-full border border-gray-200 rounded-md px-4 py-2.5 bg-gray-50 text-gray-800 font-medium min-h-[46px] flex items-center">
+              {{ procedimento()?.especie || '-' }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-900 mb-2">Gênero</label>
+            <div class="w-full border border-gray-200 rounded-md px-4 py-2.5 bg-gray-50 text-gray-800 font-medium min-h-[46px] flex items-center">
+              {{ formatarGenero(procedimento()?.genero) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end border-b border-gray-200 pb-2 gap-2">
+          <h3 class="text-lg font-semibold text-[#4e43e7]">Produtos Utilizados</h3>
+          <div class="bg-indigo-50 text-indigo-700 text-xs px-3 py-1.5 rounded font-medium">
+            Itens variáveis têm a quantidade baseada em 1KG
+          </div>
+        </div>
+
+        <div class="hidden md:block border border-gray-300 rounded overflow-hidden">
+          <table class="w-full text-left border-collapse min-w-max">
+            <thead class="bg-[#4e43e7] text-white text-sm">
+              <tr>
+                <th class="py-2.5 px-4 font-medium">Produto</th>
+                <th class="py-2.5 px-4 font-medium text-center">Tipo de Consumo</th>
+                <th class="py-2.5 px-4 font-medium text-center">Quantidade Base</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm text-gray-900">
+              @for (item of procedimento()?.itens; track item.id; let even = $even) {
+                <tr [class.bg-white]="even" [class.bg-[#ebe3e4]]="!even" class="border-b border-gray-300 last:border-0">
+                  <td class="py-2.5 px-4 font-medium">{{ item.nome }}</td>
+                  <td class="py-2.5 px-4 text-center">
+                    <span class="bg-gray-200 text-gray-800 px-2.5 py-0.5 rounded text-xs font-semibold uppercase">
+                      {{ item.tipo }}
+                    </span>
+                  </td>
+                  <td class="py-2.5 px-4 text-center font-medium">{{ item.quantidade }}</td>
+                </tr>
+              } @empty {
+                <tr class="bg-white">
+                  <td colspan="3" class="py-6 px-4 text-center text-gray-500 font-medium">
+                    Nenhum produto vinculado a este procedimento.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="md:hidden flex flex-col gap-4">
+          @for (item of procedimento()?.itens; track item.id) {
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
+              <div class="flex justify-between items-start border-b border-gray-200 pb-2 mb-3">
+                <h4 class="font-bold text-[#4e43e7] text-base pr-2">{{ item.nome }}</h4>
+                <span class="text-[10px] bg-gray-200 text-gray-800 px-2 py-1 rounded uppercase font-bold tracking-wider shrink-0">
+                  {{ item.tipo }}
+                </span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-gray-500 text-xs font-semibold uppercase mb-1">Quantidade Base</span>
+                <span class="font-medium text-gray-900 text-lg">{{ item.quantidade }}</span>
+              </div>
+            </div>
+          } @empty {
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 shadow-sm text-center text-sm font-medium text-gray-500">
+              Nenhum produto vinculado a este procedimento.
+            </div>
+          }
+        </div>
+      </div>
+
+    } @else {
+      <div class="flex justify-center items-center py-12 text-red-500 font-medium">
+        Procedimento não encontrado ou erro ao carregar os dados.
+      </div>
+    }
+
+    <div class="mt-10 flex flex-col sm:flex-row justify-start gap-4 pt-4 border-t border-gray-100">
+      <a 
+        routerLink="/procedimentos" 
+        class="w-full sm:w-auto px-8 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-md hover:bg-gray-50 transition-colors hover:cursor-pointer text-center"
+      >
+        Voltar para a lista
+      </a>
+    </div>
+
+  </div>
+</div>

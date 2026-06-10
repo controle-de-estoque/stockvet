@@ -15,6 +15,7 @@ import { Relatorios } from './pages/relatorios/relatorios';
 import { NotFound } from './pages/not-found/not-found';
 import { ProcedimentosComponent } from './pages/procedimentos/procedimentos';
 import { ProcedimentosNovo } from './pages/procedimentos-novo/procedimentos-novo';
+import { ProcedimentosViewComponent } from './pages/procedimentos-view/procedimentos-view';
 
 export const routes: Routes = [
   {
@@ -72,6 +73,10 @@ export const routes: Routes = [
   {
     path: 'procedimentos/novo',
     component: ProcedimentosNovo
+  },
+  {
+    path: 'procedimentos/:id',
+    component: ProcedimentosViewComponent
   },
   {
     path: 'procedimentos',
