@@ -120,17 +120,26 @@ export class Api {
     return this.http.get(`${this.baseUrl}/procedimentos/estoque/${localStorage.getItem('estoque')}`);
   }
 
+  buscarProcedimentoPorId(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/procedimentos/${id}`);
+  }
+
   cadastrarProcedimento(dados: { 
-  nomeProcedimento: string, 
+    nomeProcedimento: string, 
     nomeEspecie: string, 
     genero: string, 
-    estoque: string 
+    estoque: string,
+    itens: { produtoId: string, quantidade: number, tipo: 'fixo' | 'variavel' }[] 
   }): Observable<any> {
     return this.http.post(`${this.baseUrl}/procedimentos`, dados, { responseType: 'text' });
   }
 
   inativarProcedimento(id: string): Observable<any> {
     return this.http.patch(`${this.baseUrl}/procedimentos/${id}/inativar`, null, { responseType: 'text' });
+  }
+
+  cadastrarMovimentacaoProcedimento(dados: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/movimentacoes/procedimento`, dados);
   }
 
 }

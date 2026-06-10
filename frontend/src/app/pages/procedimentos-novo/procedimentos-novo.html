@@ -1,102 +1,105 @@
-<div class="min-h-screen">
-  <div class="flex flex-col w-full md:max-w-[80%] mx-auto gap-4 p-4 md:p-6">
-    
-    <app-navbar></app-navbar>
+<div class="flex flex-col w-full md:max-w-[80%] mx-auto gap-4 p-4 md:p-0">
+  <app-navbar></app-navbar>
 
-    <div class="bg-white p-4 md:p-6 flex flex-col gap-6 rounded-md shadow-lg border border-gray-100">
-        
-        <div class="flex justify-between items-center border-b border-gray-200 pb-4">
-            <h2 class="font-bold text-lg md:text-xl text-gray-800">Novo Procedimento</h2>
-            <span class="text-sm font-medium text-gray-500">Passo {{ etapaAtual }} de 2</span>
+  <div class="bg-white p-4 md:p-6 flex flex-col items-center gap-6 rounded-md shadow mb-12">
+    <h2 class="self-start font-bold text-lg md:text-xl">Novo Procedimento (Passo {{ etapaAtual }} de 2)</h2>
+
+    <div class="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
+      
+      @if (etapaAtual === 1) {
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Nome do Procedimento</label>
+            <input type="text" [(ngModel)]="procedimento.nomeProcedimento" class="w-full border border-gray-800 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Espécie</label>
+              <input type="text" [(ngModel)]="procedimento.nomeEspecie" class="w-full border border-gray-800 rounded px-3 py-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Gênero</label>
+              <select [(ngModel)]="procedimento.genero" class="w-full border border-gray-800 rounded px-3 py-2 text-sm">
+                <option value="">Selecione...</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+              </select>
+            </div>
+          </div>
+          <button (click)="avancarEtapa()" class="bg-[#4e43e7] hover:bg-indigo-700 text-white font-medium text-sm py-2.5 rounded transition-colors mt-4">Avançar</button>
         </div>
+      }
 
-        @if (etapaAtual === 1) {
-            <div class="flex flex-col gap-4 animate-in fade-in duration-300">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Procedimento</label>
-                    <input type="text" [(ngModel)]="procedimento.nomeProcedimento" placeholder="Ex: Castração" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]">
-                </div>
+      @if (etapaAtual === 2) {
+        <div class="flex flex-col gap-6">
+          
+          <div class="bg-indigo-50 border-l-4 border-[#4e43e7] p-4 text-sm text-gray-700 rounded-r">
+            <p><strong>Atenção:</strong> Produtos do tipo <strong>"Variável"</strong> devem ter a quantidade cadastrada com base em um animal de <strong>1KG</strong>. Produtos do tipo <strong>"Fixo"</strong> não possuem consumo variável de acordo com o peso do animal.</p>
+          </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Espécie</label>
-                        <input type="text" [(ngModel)]="procedimento.nomeEspecie" placeholder="Ex: Canina" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Gênero</label>
-                        <select [(ngModel)]="procedimento.genero" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7] bg-white">
-                            <option value="" disabled selected>Selecione...</option>
-                            <option value="M">Masculino</option>
-                            <option value="F">Feminino</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="flex justify-between items-center mt-4">
-                    <a routerLink="/procedimentos" class="text-sm text-gray-500 hover:text-gray-800 transition">Cancelar</a>
-                    <button (click)="avancarEtapa()" class="bg-[#4e43e7] text-white px-6 py-2 rounded text-sm font-medium hover:bg-indigo-700 transition cursor-pointer">
-                        Avançar para Produtos
-                    </button>
-                </div>
+          <div class="flex flex-col md:flex-row gap-4 items-end">
+            <div class="flex-1">
+              <label class="block text-sm font-medium mb-1">Produto</label>
+              <select [(ngModel)]="novoProduto.id" class="w-full border border-gray-800 rounded px-3 py-2 text-sm">
+                <option value="">Selecione...</option>
+                @for (p of produtosDisponiveis; track p.id) { <option [value]="p.id">{{ p.nome }}</option> }
+              </select>
             </div>
-        }
-
-        @if (etapaAtual === 2) {
-            <div class="flex flex-col gap-4 animate-in fade-in duration-300">
-                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r">
-                    <p class="text-sm text-blue-800 font-medium">
-                        Atenção: A quantidade deve considerar um <strong>animal com 1KG</strong> como referência.
-                    </p>
-                </div>
-
-                <div class="bg-gray-50 border border-gray-200 p-4 rounded-md flex flex-col md:flex-row items-end gap-3">
-                    <div class="w-full md:w-3/5">
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Produto</label>
-                        <input type="text" [(ngModel)]="novoProduto.nome" placeholder="Ex: Anestésico X" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]">
-                    </div>
-                    <div class="w-full md:w-1/5">
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Qtd / 1KG</label>
-                        <input type="number" [(ngModel)]="novoProduto.quantidade" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4e43e7]" min="0.1" step="0.1">
-                    </div>
-                    <div class="w-full md:w-1/5">
-                        <button (click)="adicionarProduto()" class="w-full bg-gray-800 text-white px-4 py-2 rounded text-sm font-medium hover:bg-gray-900 transition cursor-pointer">
-                            Adicionar
-                        </button>
-                    </div>
-                </div>
-
-                <div class="border border-gray-200 rounded-md overflow-hidden">
-                    <table class="w-full text-sm text-left">
-                        <thead class="bg-gray-100 text-gray-700 border-b border-gray-200">
-                            <tr>
-                                <th class="px-4 py-2">Produto</th>
-                                <th class="px-4 py-2 text-center">Qtd (1kg)</th>
-                                <th class="px-4 py-2 text-center w-16">Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (prod of produtos; track $index) {
-                                <tr class="border-b border-gray-200">
-                                    <td class="px-4 py-2">{{ prod.nome }}</td>
-                                    <td class="px-4 py-2 text-center">{{ prod.quantidade }}</td>
-                                    <td class="px-4 py-2 text-center">
-                                        <button (click)="removerProduto($index)" class="text-red-600 hover:text-red-800">Excluir</button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="flex justify-between mt-4 pt-4 border-t border-gray-200">
-                    <button (click)="voltarEtapa()" class="text-gray-600 px-6 py-2 rounded text-sm hover:underline">Voltar</button>
-                    <button (click)="salvarProcedimento()" class="bg-green-600 text-white px-6 py-2 rounded text-sm font-medium hover:bg-green-700 transition">
-                        Finalizar Cadastro
-                    </button>
-                </div>
+            <div class="w-full md:w-32">
+              <label class="block text-sm font-medium mb-1">Tipo</label>
+              <select [(ngModel)]="novoProduto.tipo" class="w-full border border-gray-800 rounded px-3 py-2 text-sm">
+                <option value="variavel">Variável</option>
+                <option value="fixo">Fixo</option>
+              </select>
             </div>
-        }
+            <div class="w-full md:w-32">
+              <label class="block text-sm font-medium mb-1">Qtd</label>
+              <input type="number" [(ngModel)]="novoProduto.quantidade" class="w-full border border-gray-800 rounded px-3 py-2 text-sm">
+            </div>
+            <button (click)="adicionarProduto()" class="bg-gray-800 text-white px-6 py-2.5 rounded text-sm font-medium hover:bg-black transition">Adicionar</button>
+          </div>
+
+          <table class="w-full text-left text-sm border border-gray-300 rounded">
+            <thead class="bg-[#4e43e7] text-white">
+              <tr>
+                <th class="p-3">Produto</th>
+                <th class="p-3">Tipo</th>
+                <th class="p-3">Qtd</th>
+                <th class="p-3 text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (prod of produtos; track $index) {
+                <tr class="border-b border-gray-300">
+                  <td class="p-3">{{ prod.nome }}</td>
+                  <td class="p-3 uppercase">{{ prod.tipo }}</td>
+                  <td class="p-3">{{ prod.quantidade }}</td>
+                  
+                  <td class="p-3 text-center">
+                    <div class="flex justify-center items-center gap-3">
+                      
+                      <button 
+                        (click)="removerProduto($index)" 
+                        class="text-black hover:text-red-600 transition-colors hover:cursor-pointer"
+                        title="Remover produto"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <div class="flex justify-between gap-4">
+            <button (click)="voltarEtapa()" class="border border-[#4e43e7] text-[#4e43e7] px-6 py-2.5 rounded text-sm font-medium">Voltar</button>
+            <button (click)="salvarProcedimento()" class="bg-[#4e43e7] hover:bg-indigo-700 text-white px-6 py-2.5 rounded text-sm font-medium">Finalizar Cadastro</button>
+          </div>
+        </div>
+      }
     </div>
   </div>
 </div>

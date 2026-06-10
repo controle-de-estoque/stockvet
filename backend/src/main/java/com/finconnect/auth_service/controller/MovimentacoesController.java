@@ -1,6 +1,7 @@
 package com.finconnect.auth_service.controller;
 
 import com.finconnect.auth_service.dto.CreateMovimentacaoEntradaRequest;
+import com.finconnect.auth_service.dto.CreateMovimentacaoProcedimentoRequest;
 import com.finconnect.auth_service.dto.CreateMovimentacaoSaidaRequest;
 import com.finconnect.auth_service.dto.MovimentacaoResponse;
 import com.finconnect.auth_service.service.MovimentacaoService;
@@ -37,6 +38,12 @@ public class MovimentacoesController {
     @PostMapping("/saida")
     public ResponseEntity<Void> registrarSaida(@Valid @RequestBody List<CreateMovimentacaoSaidaRequest> request) {
         movimentacaoService.registrarSaida(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/procedimento")
+    public ResponseEntity<Void> registrarPorProcedimento(@Valid @RequestBody CreateMovimentacaoProcedimentoRequest request) {
+        movimentacaoService.registrarSaidaPorProcedimento(request);
         return ResponseEntity.ok().build();
     }
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit, signal, computed, WritableSignal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
 import { Api } from '../../api';
 
@@ -31,13 +31,17 @@ type ItemMovimentacao = {
 
 @Component({
   selector: 'app-cadastrar-movimentacao',
+  standalone: true,
   imports: [Navbar, RouterLink, FormsModule],
   templateUrl: './cadastrar-movimentacao.html',
   styleUrl: './cadastrar-movimentacao.css',
 })
 export class CadastrarMovimentacao implements OnInit {
-  // --- Estados Base (Signals) ---
   currentStep = signal<Step>('info');
+
+  usarProcedimento = signal(false);
+  procedimentoSelecionadoId = signal('');
+  pesoAnimal = signal<number | null>(null);
 
   tipoMovimentacao = signal('');
   dataMovimentacao = signal('');
@@ -46,6 +50,7 @@ export class CadastrarMovimentacao implements OnInit {
 
   cessionarios = signal<Cessionario[]>([]);
   produtos = signal<Produto[]>([]);
+  procedimentosLista = signal<any[]>([]);
 
   produtoSelecionadoId = signal('');
   quantidadeSelecionada = signal<number | null>(null);
@@ -58,9 +63,7 @@ export class CadastrarMovimentacao implements OnInit {
   loteQuantidade = signal<number | null>(null);
   loteValidade = signal('');
 
-  // --- Estados Derivados (Computed) ---
   isStepInfo = computed(() => this.currentStep() === 'info');
-
   isStepProdutos = computed(() => this.currentStep() !== 'info');
 
   produtoSelecionado = computed(() =>
@@ -94,21 +97,63 @@ export class CadastrarMovimentacao implements OnInit {
       && (this.loteQuantidade() ?? 0) > 0;
   });
 
-  constructor(private api: Api) {}
+  podeFinalizarProcedimentoInfo = computed(() => {
+    return this.tipoMovimentacao() === 'saida'
+      && this.usarProcedimento()
+      && !!this.procedimentoSelecionadoId()
+      && (this.pesoAnimal() ?? 0) > 0;
+  });
+
+  constructor(private api: Api, private router: Router) {}
 
   ngOnInit(): void {
-    this.api.buscarCessionariosPorEstoque(localStorage.getItem("estoque")!).subscribe({
+    const estoqueId = localStorage.getItem("estoque")!;
+
+    this.api.buscarCessionariosPorEstoque(estoqueId).subscribe({
       next: (response) => this.cessionarios.set(response),
-      error: (err) => window.alert("Falha ao carregar cessionários")
+      error: () => window.alert("Falha ao carregar cessionários")
     });
 
     this.api.buscarProdutos().subscribe({
       next: (response) => this.produtos.set(response),
-      error: (err) => window.alert("Falha ao carregar produtos")
+      error: () => window.alert("Falha ao carregar produtos")
+    });
+
+    this.api.buscarProcedimentos().subscribe({
+      next: (response) => this.procedimentosLista.set(response.filter((p: any) => p.ativo)),
+      error: () => window.alert("Falha ao carregar procedimentos")
     });
   }
 
+  onUsarProcedimentoChange(checked: boolean): void {
+    this.usarProcedimento.set(checked);
+    if (checked) {
+      this.tipoMovimentacao.set('saida');
+    } else {
+      this.tipoMovimentacao.set('');
+      this.procedimentoSelecionadoId.set('');
+      this.pesoAnimal.set(null);
+    }
+    // Limpa a lista manual caso o usuário fique alternando
+    this.itensMovimentacao.set([]);
+    this.produtoSelecionadoId.set('');
+    this.quantidadeSelecionada.set(null);
+    this.limparLote();
+  }
+
+  onTipoChange(): void {
+    this.itensMovimentacao.set([]);
+    this.produtoSelecionadoId.set('');
+    this.quantidadeSelecionada.set(null);
+    this.limparLote();
+  }
+
   cadastrarMovimentacao() {
+    if (this.usarProcedimento() && this.tipoMovimentacao() === 'saida') {
+      this.executarMovimentacaoProcedimento();
+      return;
+    }
+
     if (this.itensMovimentacao().length === 0) {
       window.alert("Adicione pelo menos um item à movimentação.");
       return;
@@ -136,10 +181,10 @@ export class CadastrarMovimentacao implements OnInit {
             next: () => {
               window.alert("Entradas registradas com sucesso!");
               this.itensMovimentacao.set([]);
-              this.voltarParaInfo();
+              this.router.navigate(['/movimentacoes']);
             },
             error: (err) => {
-              console.error("Erro na entrada", err);
+              console.error(err);
               window.alert("Ocorreu um erro ao registrar as entradas.");
             }
           });
@@ -148,17 +193,44 @@ export class CadastrarMovimentacao implements OnInit {
             next: () => {
               window.alert("Saídas registradas com sucesso!");
               this.itensMovimentacao.set([]);
-              this.voltarParaInfo();
+              this.router.navigate(['/movimentacoes']);
             },
             error: (err) => {
-              console.error("Erro na saída", err);
-              window.alert("Ocorreu um erro ao registrar as saídas.");
+              console.error(err);
+              window.alert("Erro ao processar as saídas. Verifique o saldo disponível dos lotes.");
             }
           });
         }
-
       },
-      error: (err) => window.alert("Erro ao identificar o usuário. Verifique seu login.")
+      error: () => window.alert("Erro ao identificar o usuário. Verifique seu login.")
+    });
+  }
+
+  executarMovimentacaoProcedimento() {
+    this.api.getIdFromUserEmail().subscribe({
+      next: (userId) => {
+        const cleanUserId = userId.replace(/"/g, '').trim();
+        const payload = {
+          procedimentoId: this.procedimentoSelecionadoId(),
+          pesoAnimal: this.pesoAnimal(),
+          estoque: localStorage.getItem("estoque")!,
+          movimentadoPor: cleanUserId,
+          dataHoraMovimentacao: `${this.dataMovimentacao()}T${this.horarioMovimentacao()}`,
+          cessionario: this.cessionarioId() || null
+        };
+
+        this.api.cadastrarMovimentacaoProcedimento(payload).subscribe({
+          next: () => {
+            window.alert("Procedimento executado! Estoque abatido automaticamente com sucesso.");
+            this.router.navigate(['/movimentacoes']);
+          },
+          error: (err) => {
+            console.error(err);
+            window.alert("Falha ao registrar a saída. Algum produto possui estoque insuficiente para a dosagem necessária. A operação foi cancelada e o estoque mantido intacto.");
+          }
+        });
+      },
+      error: () => window.alert("Erro ao identificar o usuário. Verifique seu login.")
     });
   }
 
@@ -177,13 +249,6 @@ export class CadastrarMovimentacao implements OnInit {
     this.limparLote();
   }
 
-  onTipoChange(): void {
-    this.itensMovimentacao.set([]);
-    this.produtoSelecionadoId.set('');
-    this.quantidadeSelecionada.set(null);
-    this.limparLote();
-  }
-
   onProdutoSelecionado(): void {
     if (this.tipoMovimentacao() === 'entrada' && this.produtoSelecionadoId()) {
       this.prepararLote();
@@ -192,14 +257,10 @@ export class CadastrarMovimentacao implements OnInit {
   }
 
   adicionarSaida(): void {
-    if (!this.podeAdicionarSaida()) {
-      return;
-    }
+    if (!this.podeAdicionarSaida()) return;
 
     const produto = this.produtoSelecionado();
-    if (!produto) {
-      return;
-    }
+    if (!produto) return;
 
     this.itensMovimentacao.update(itens => [
       ...itens,
@@ -216,14 +277,10 @@ export class CadastrarMovimentacao implements OnInit {
   }
 
   adicionarLote(): void {
-    if (!this.podeAdicionarLote()) {
-      return;
-    }
+    if (!this.podeAdicionarLote()) return;
 
     const produto = this.produtoSelecionado();
-    if (!produto) {
-      return;
-    }
+    if (!produto) return;
 
     let loteDisplay = this.loteMarca().trim();
     if (this.loteIdentificador().trim()) {

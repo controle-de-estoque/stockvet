@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -6,8 +6,10 @@ import { Navbar } from "../../components/navbar/navbar";
 import { Api } from '../../api';
 
 interface ProdutoSelecionado {
+  id: string;
   nome: string;
   quantidade: number;
+  tipo: 'fixo' | 'variavel';
 }
 
 @Component({
@@ -16,63 +18,84 @@ interface ProdutoSelecionado {
   imports: [CommonModule, FormsModule, RouterModule, Navbar],
   templateUrl: './procedimentos-novo.html'
 })
-export class ProcedimentosNovo { 
-  
+export class ProcedimentosNovo implements OnInit {
   etapaAtual: number = 1;
-
-  // Corrigido para alinhar com os nomes esperados no payload
+  produtosDisponiveis: any[] = [];
+  
   procedimento = {
     nomeProcedimento: '',
     nomeEspecie: '',
     genero: ''
   };
 
-  novoProduto: ProdutoSelecionado = {
+  novoProduto = {
+    id: '',
     nome: '',
-    quantidade: 1
+    quantidade: 1,
+    tipo: 'variavel' as 'fixo' | 'variavel'
   };
 
   produtos: ProdutoSelecionado[] = [];
 
   constructor(private router: Router, private api: Api) {}
 
+  ngOnInit() {
+    this.carregarProdutosEstoque();
+  }
+
+  carregarProdutosEstoque() {
+    this.api.buscarProdutos().subscribe(data => {
+      this.produtosDisponiveis = data.filter((p: any) => p.ativo);
+    });
+  }
+
   avancarEtapa(): void {
     if (!this.procedimento.nomeProcedimento || !this.procedimento.nomeEspecie || !this.procedimento.genero) {
-      alert('Por favor, preencha todos os dados iniciais antes de avançar.');
+      alert('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
     this.etapaAtual = 2;
   }
 
-  voltarEtapa(): void {
-    this.etapaAtual = 1;
-  }
+  voltarEtapa(): void { this.etapaAtual = 1; }
 
   adicionarProduto(): void {
-    if (this.novoProduto.nome && this.novoProduto.quantidade > 0) {
-      this.produtos.push({ ...this.novoProduto }); 
-      this.novoProduto.nome = '';
-      this.novoProduto.quantidade = 1;
+    const prod = this.produtosDisponiveis.find(p => p.id === this.novoProduto.id);
+    if (prod && this.novoProduto.quantidade > 0) {
+      this.produtos.push({
+        id: prod.id,
+        nome: prod.nome,
+        quantidade: this.novoProduto.quantidade,
+        tipo: this.novoProduto.tipo
+      });
     } else {
-      alert('Informe o nome e uma quantidade válida.');
+      alert('Selecione um produto e uma quantidade válida.');
     }
   }
 
-  removerProduto(index: number): void {
-    this.produtos.splice(index, 1);
+  removerProduto(index: number): void { this.produtos.splice(index, 1); }
+
+  // NOVO MÉTODO ADICIONADO AQUI
+  visualizarItem(id: string): void {
+    // Atenção: este ID pertence ao produto da linha. 
+    // Altere o caminho se a intenção for navegar para a tela do produto em si.
+    this.router.navigate(['/procedimentos', id]);
   }
 
   salvarProcedimento(): void {
     if (this.produtos.length === 0) {
-      alert('Adicione pelo menos um produto.');
+      alert('Adicione pelo menos um produto ao procedimento.');
       return;
     }
 
-    const estoqueId = localStorage.getItem('estoque') || '';
-
     const payload = {
       ...this.procedimento,
-      estoque: estoqueId
+      estoque: localStorage.getItem('estoque') ?? '',
+      itens: this.produtos.map(p => ({
+        produtoId: p.id,
+        quantidade: p.quantidade,
+        tipo: p.tipo
+      }))
     };
 
     this.api.cadastrarProcedimento(payload).subscribe({

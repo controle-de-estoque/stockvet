@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
 import { Api } from '../../api';
 
@@ -41,7 +41,7 @@ export class ProcedimentosComponent implements OnInit {
     );
   });
 
-  constructor(private api: Api) {}
+  constructor(private api: Api, private router: Router) {}
 
   ngOnInit(): void {
     this.carregarProcedimentos();
@@ -56,6 +56,10 @@ export class ProcedimentosComponent implements OnInit {
 
   onSearchChange(valor: string): void {
     this.termoBusca.set(valor);
+  }
+
+  visualizarProcedimento(id: string): void {
+    this.router.navigate(['/procedimentos', id]);
   }
 
   inativarProcedimento(id: string): void {
